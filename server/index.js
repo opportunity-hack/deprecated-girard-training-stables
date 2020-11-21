@@ -1,13 +1,31 @@
-import app from './src/configs/server';
+const express = require("express");
+const app = express();
+const dotenv = require("dotenv");
+const router = require("./src/routes");
 
-const appInstance = app();
+dotenv.config();
 
-appInstance.start();
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
 
-const stopApplication = () => {
-    appInstance.stop();
-}
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, Accept, Content-Type, Content-Length, Authorization, X-Requested-With, X-XSRF-TOKEN"
+  );
+  res.header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
+  next();
+});
 
-process.on('SIGTERM', stopApplication);
-process.on('SIGINT', stopApplication);
-process.on('SIGQUIT', stopApplication);
+app.use("/", router);
+
+app.use(function(req, res, next) {
+  res.status(404);
+  // default to plain-text. send()
+  res.send("Requested API route not found");
+});
+
+const listener = app.listen(process.env.PORT, function() {
+  console.log("Your app is listening on port " + process.env.PORT);
+});

@@ -1,18 +1,8 @@
-import apiRoutes from './api';
+const express = require("express");
+const userRouter = require("./user");
 
-const init = server => {
-  server.get('/', (req, res, next) => {
-    console.log(`Request received for ${req.originalUrl}`);
-    res.status(200).json({ 'status': 'online' });
-    return next();
-  });
- 
-  server.use('/api', apiRoutes);
-};
+const router = express.Router();
 
+router.use("/users", userRouter);
 
-const routes = {
-  init,
-};
-
-export default routes;
+module.exports = router;
