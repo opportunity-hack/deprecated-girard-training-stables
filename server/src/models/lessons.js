@@ -5,11 +5,13 @@ const User = require("./users");
 const lessonSchema = new mongoose.Schema({
   startDateTime: {
     type: Date,
-    required: true
+    required: true,
+    default: new Date()
   },
   endDateTime: {
     type: Date,
-    required: true
+    required: true,
+    default: new Date()
   },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
@@ -17,28 +19,28 @@ const lessonSchema = new mongoose.Schema({
     required: true,
   },
   volunteers: {
-    "barnCrew" : {
+    "barn crew" : {
       required: Number,
       signedUp: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: User,
       }]
     },
-    "lessonAssistent" : {
+    "lesson assistent" : {
       required: Number,
       signedUp: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: User,
       }]
     },
-    "sideWalker" : {
+    "sidewalker" : {
       required: Number,
       signedUp: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: User,
       }]
     },
-    "horseLeader" : {
+    "horse leader" : {
       required: Number,
       signedUp: [{
         type: mongoose.Schema.Types.ObjectId,

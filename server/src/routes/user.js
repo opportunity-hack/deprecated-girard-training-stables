@@ -7,10 +7,12 @@ const {
 const express = require("express");
 const userRouter = express.Router();
 
-userRouter.post("/", create);
-
-userRouter.route("/:id")
+userRouter.route("/")
+.post(create)
 .put(update)
+
+// userRouter.route("/:id")
+// .put(update)
 
 
 module.exports = userRouter;

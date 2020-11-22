@@ -100,6 +100,9 @@ module.exports.getAllPositionsBySkills = async function(req, res) {
   }
 };
 
+
+
+
 module.exports.createPositions = async function(req, res) {
   try {
     const response = await Position.insertMany(req.body);
