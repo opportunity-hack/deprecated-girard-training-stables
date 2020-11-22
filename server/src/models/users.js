@@ -1,6 +1,6 @@
 const mongoose = require("./db/connector");
+const Skill = require("./skills");
 const UserType = require("./UserTypes");
-// const Lesson = require("./lessons");
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -27,7 +27,10 @@ const userSchema = new mongoose.Schema({
   DOB: {
     type: Date
   },
-  skills: [{type: String}]
+  skills: [{
+    type: mongoose.Types.ObjectId,
+    ref: Skill
+  }]
 });
 
 // userSchema.method("toClient", function() {
