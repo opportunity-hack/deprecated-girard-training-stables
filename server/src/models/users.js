@@ -9,30 +9,25 @@ const userSchema = new mongoose.Schema({
   },
   lastNAme: {
     type: String,
+    required: false
   },
   userType: {
     type: mongoose.Schema.Types.ObjectId,
     ref: UserType,
     required: true
   },
+  emailId: {type:String, required: true},
   height: {
     type: Number,
   },
   phoneNumber: {
-    type: Number
+    type: String,
+    required: true,
   },
-  age: {
-    type: Number
+  DOB: {
+    type: Date
   },
-  // lessonsSubscribed: [{ 
-  //   lesson: {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: Lesson,
-  //     required: true
-  //   },
-  //   startDateTime: Date,
-  //   endDateTime: Date,
-  // }]
+  skills: [{type: String}]
 });
 
 // userSchema.method("toClient", function() {

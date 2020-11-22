@@ -5,7 +5,6 @@ const { dataHandler } = require("../utils/responseHandler");
 module.exports.create = async function(req, res) {
   try {
     const response = await User.create(req.body);
-    console.log("object");
     return dataHandler({
         status: 201,
         data: response,
@@ -22,3 +21,31 @@ module.exports.create = async function(req, res) {
     );
   }
 };
+
+module.exports.update = async function(req, res) {
+  try {
+    const { id } = req.params;
+    const response = await User.findOneAndUpdate({
+       _id: id 
+    },
+      req.body,
+      { new: true }
+    );
+    
+    return dataHandler({
+        status: 201,
+        data: response,
+      },
+      res
+    );
+  } catch (err) {
+    return dataHandler(
+      {
+        status: 500,
+        error: `Server error: ${err.message}.`
+      },
+      res
+    );
+  }
+};
+
