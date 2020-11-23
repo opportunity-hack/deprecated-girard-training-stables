@@ -99,8 +99,9 @@ function Signup(props) {
 
     const handleSubmit = (event) => {
 
-        event.preventDefault();
+        // event.preventDefault();
         console.log('Submitted form', formVal);
+
     }
 
     return (
