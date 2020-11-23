@@ -9,6 +9,7 @@
 - [Problem statement](https://www.ohack.org/hackathon/non-profits#h.3dqivcz34dey)
 - [Team Communicationn channel](https://slack.com/app_redirect?channel=stardust)
 - [Demo app](https://guarded-earth-06071.herokuapp.com/)
+- [Video](https://youtu.be/uDrTW5eCXrk)
 
 ## Setup instructions
 
