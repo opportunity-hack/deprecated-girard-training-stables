@@ -16,7 +16,7 @@
 
 Server running at 
 ```
-<heroku-link>:3000
+https://jelly-apple-efraasia.glitch.me/
 ```
 
 To Start the app
@@ -26,7 +26,7 @@ npm i && npm start
 ```
 1. To create/ book a lesson
   ```
-  POST <heroku-link>/lessons
+  POST https://jelly-apple-efraasia.glitch.me/lessons
 
   {
     "instructor": "5fbad74fd9127ba2ebe12b6e",
@@ -61,7 +61,7 @@ npm i && npm start
 
 2. To create user
   ```
-  POST <heroku-link>/users
+  POST https://jelly-apple-efraasia.glitch.me//users
 
   {
     "firstName": "Billy",
@@ -77,7 +77,7 @@ npm i && npm start
 
 1. To get all skills
   ```
-  GET <heroku-link>/skills
+  GET https://jelly-apple-efraasia.glitch.me//skills
 
   {
     "username": "Celestine_Bogan",
@@ -88,7 +88,7 @@ npm i && npm start
 2. To add volunteer position(s)
 >*Note: Already added skills based on positions*
   ```
-  POST <heroku-link>/positions
+  POST https://jelly-apple-efraasia.glitch.me//positions
 
   [
     {
