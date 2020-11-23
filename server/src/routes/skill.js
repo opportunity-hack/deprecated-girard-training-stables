@@ -3,7 +3,7 @@ const {
   createPositions, 
   getAllPositions, 
   getAllSkills, 
-  getAllPositionsBySkills
+  getAllPositionsBySkillsAndRequirement
 } = require('../controllers/skills');
 const { createHorses } = require('../controllers/horses');
 
@@ -17,7 +17,7 @@ skillRouter.route('/skills')
 .get(getAllSkills)
 .post(createSkills);
 
-skillRouter.post('/positions/getBySkills', getAllPositionsBySkills);
+skillRouter.post('/positions/getBySkills', getAllPositionsBySkillsAndRequirement);
 
 skillRouter.route('/positions')
 .get(getAllPositions)

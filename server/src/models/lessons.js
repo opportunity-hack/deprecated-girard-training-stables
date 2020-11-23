@@ -3,16 +3,19 @@ const Horse = require("./horses");
 const User = require("./users");
 
 const lessonSchema = new mongoose.Schema({
-  startDateTime: {
+  startTime: {
+    type: String,
+    required: true,
+  },
+  endTime: {
+    type: String,
+    required: true,
+  },
+  bookedDates: [{
     type: Date,
     required: true,
     default: new Date()
-  },
-  endDateTime: {
-    type: Date,
-    required: true,
-    default: new Date()
-  },
+  }],
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: User,
