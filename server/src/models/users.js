@@ -1,6 +1,7 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("./db/connector");
+const Skill = require("./skills");
 const UserType = require("./UserTypes");
-// const Lesson = require("./lessons");
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -9,30 +10,32 @@ const userSchema = new mongoose.Schema({
   },
   lastNAme: {
     type: String,
+    required: false
   },
   userType: {
     type: mongoose.Schema.Types.ObjectId,
     ref: UserType,
+    required: true,
+    default: mongoose.Types.ObjectId('5fba413ce7179a09214d6bc0')
+  },
+  emailId: {
+    type:String,
     required: true
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
   },
   height: {
     type: Number,
   },
-  phoneNumber: {
+  Age: {
     type: Number
   },
-  age: {
-    type: Number
-  },
-  // lessonsSubscribed: [{ 
-  //   lesson: {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: Lesson,
-  //     required: true
-  //   },
-  //   startDateTime: Date,
-  //   endDateTime: Date,
-  // }]
+  skills: [{
+    type: mongoose.Types.ObjectId,
+    ref: Skill
+  }]
 });
 
 // userSchema.method("toClient", function() {

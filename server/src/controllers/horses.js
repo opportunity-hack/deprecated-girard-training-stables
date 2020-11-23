@@ -1,10 +1,10 @@
-const User = require("../models/users");
+const Position = require("../models/positions");
+const Horse = require("../models/horses");
 const { dataHandler } = require("../utils/responseHandler");
-// const { generateRandomUser } = require("../utils/seed-generator");
 
-module.exports.create = async function(req, res) {
+module.exports.createHorses = async function(req, res) {
   try {
-    const response = await User.create(req.body);
+    const response = await Horse.insertMany(req.body);
     return dataHandler({
         status: 201,
         data: response,
@@ -22,18 +22,12 @@ module.exports.create = async function(req, res) {
   }
 };
 
-module.exports.update = async function(req, res) {
+module.exports.getAllSkills = async function(req, res) {
   try {
-    const { id } = req.body;
-    const response = await User.findOneAndUpdate({
-       _id: id 
-    },
-      req.body,
-      { new: true }
-    );
+    const response = await Skill.find({});
     
     return dataHandler({
-        status: 201,
+        status: 200,
         data: response,
       },
       res
@@ -48,4 +42,3 @@ module.exports.update = async function(req, res) {
     );
   }
 };
-

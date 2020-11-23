@@ -11,7 +11,7 @@ const horseSchema = new mongoose.Schema({
   beginner: {
     type: Number,
   },
-  inntermediate: {
+  intermediate: {
     type: Number,
   },
   advanced: {

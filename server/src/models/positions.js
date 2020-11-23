@@ -1,4 +1,5 @@
 const mongoose = require("./db/connector");
+const Skill = require("./skills");
 
 const positionSchema = new mongoose.Schema({
   name: {
@@ -6,11 +7,8 @@ const positionSchema = new mongoose.Schema({
     required: true
   },
   skills: [{
-    name: {
-      type: String,
-      required: true 
-    },
-    YOE: mongoose.Schema.Types.Decimal128
+    type: mongoose.Types.ObjectId,
+    ref: Skill
   }],
 });
 

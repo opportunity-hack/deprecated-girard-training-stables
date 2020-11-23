@@ -9,7 +9,8 @@ mongoose.connect(uri, {
   useNewUrlParser: true, 
   useUnifiedTopology: true, 
   useCreateIndex: true,
-  useFindAndModify:true
+  useFindAndModify: false,
+  retryWrites: false,
  });
 
 module.exports = mongoose;
