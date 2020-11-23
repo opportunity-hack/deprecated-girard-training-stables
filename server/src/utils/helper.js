@@ -1,3 +1,17 @@
+module.exports.convertTimeFormat = function(from, format) {
+
+    const [hours, mins] = from.split(':');
+    if(format === 'hh:mm') {
+        if(parseInt(hours) > 12) 
+            return `${(parseInt(hours) - 12).toString().padStart(2,"0")}:${mins} pm`
+        else 
+        return `${from} am` 
+    } else {
+        //HH mm
+        return from;
+    }
+}
+
 module.exports.getFormattedDateTime = function (date, format) {
 
   if (!format) {

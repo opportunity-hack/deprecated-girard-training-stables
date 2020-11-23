@@ -29,8 +29,8 @@ const userSchema = new mongoose.Schema({
   height: {
     type: Number,
   },
-  DOB: {
-    type: Date
+  Age: {
+    type: Number
   },
   skills: [{
     type: mongoose.Types.ObjectId,
