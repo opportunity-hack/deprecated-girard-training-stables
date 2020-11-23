@@ -1,7 +1,7 @@
 const { ObjectId } = require("mongodb");
 const mongoose = require("./db/connector");
 const Skill = require("./skills");
-const UserType = require("./UserTypes");
+const UserType = require("./userTypes");
 
 const userSchema = new mongoose.Schema({
   firstName: {
