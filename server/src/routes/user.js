@@ -11,8 +11,4 @@ userRouter.route("/")
 .post(create)
 .put(update)
 
-// userRouter.route("/:id")
-// .put(update)
-
-
 module.exports = userRouter;
