@@ -5,7 +5,7 @@
 - Thapasya
 - Balaji
 
-## Useful links 
+## Useful links
 - [Problem statement](https://www.ohack.org/hackathon/non-profits#h.3dqivcz34dey)
 - [Team Communicationn channel](https://slack.com/app_redirect?channel=stardust)
 - [Demo app](https://guarded-earth-06071.herokuapp.com/)
@@ -13,9 +13,19 @@
 
 ## Setup instructions
 
-## Server side 
+## 1. Create a .env file
+In ./server, create a .env file that will allow NodeJS to read environment variables, add these variables.
+```
+MONGODB_URI=mongodb://localhost:27017
+PORT=2222
+EMAIL=test@something.com
+PASSWORD=daklsdjad
+MAIN_URL=www.ohack.org
+```
 
-Server running at 
+## 2. Server side
+
+Server running at
 ```
 https://jelly-apple-efraasia.glitch.me/
 ```
@@ -123,7 +133,9 @@ npm i && npm start
 ]
   ```
 
-## Client side
+
+
+## 3. Client side
 
 - To Start the app
 ```
