@@ -45,17 +45,17 @@ function CreateEvent(props) {
     };
 
     const handleChange = (event) => {
-        let field = event.target.name || event.target.id;
-        let value = ((event) => {
-            switch(event.target.type) {
+        let field = event.target.name || event.target.id; // Get which part was changed
+        let value = ((event) => { // Value = event = what is returned by the function?
+            switch(event.target.type) { // Returns whether the checkbox is checked or not if the field that called handleChange was a checkbox
                 case 'checkbox': 
                     return event.target.checked;
                 default: 
-                    return event.target.value;
+                    return event.target.value; // Returns the value of the field otherwise
             }
         })(event);
 
-        setFormValue({
+        setFormValue({ // Set the value of the form field to the value of the field that called handleChange
             ...formVal,
             [field]: value
         });
@@ -63,9 +63,9 @@ function CreateEvent(props) {
 
     const submitEventRequest = () => {
         console.log('Event submit')
-        let fD = {};
+        let fD = {};    // The event that we will submit - starts empty
         fD.instructor = '';
-        fD.volunteers = {
+        fD.volunteers = { // Initialize all the values that we will get from the user as empty to begin.
             "barn crew": {
                 required: formVal.barnCrewCount || 0,
                 signedUp: []
@@ -95,7 +95,7 @@ function CreateEvent(props) {
         }
 
         let date1 = new Date(formVal.startDate);
-        if(formVal.recurring) {
+        if(formVal.recurring) { // Calculate the difference between date1 and date2 - determine start and end date?
             let date2 = new Date(formVal.endDate);
             let interval = formVal.interval + 1;
             const diffTime = Math.abs(date2 - date1);
@@ -111,7 +111,7 @@ function CreateEvent(props) {
         fD.endTime = formVal.endTime;
         fD.notes = "";
 
-        console.log('Form Data', fD);
+        console.log('Form Data', fD); // Store the event data we got
     }
 
     const useStyles = makeStyles((theme) => ({
@@ -126,7 +126,7 @@ function CreateEvent(props) {
 
 
 
-    return (
+    return ( // Get all the data that we need from the user
         <Card style={{width:'50%', padding: '2% 3%', margin: 'auto', justifyContent: 'center'}} className="flex flex-grow">
             <header className="heading modal-heading">Create New Event</header>
             <form className="event-form" onSubmit={submitEventRequest}>
