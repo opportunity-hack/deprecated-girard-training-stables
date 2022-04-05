@@ -5,10 +5,10 @@ const {
 // const { verifyId } = require("../utils/middlewares");
 
 const express = require("express");
-const userRouter = express.Router();
+const router = require('express').Router();
 
-userRouter.route("/")
+router.route("/")
 .post(create)
 .put(update)
 
-module.exports = userRouter;
+module.exports = router;

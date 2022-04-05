@@ -101,7 +101,7 @@ function Signup(props) {
 
         // event.preventDefault();
         console.log('Submitted form', formVal);
-
+        
     }
 
     return (

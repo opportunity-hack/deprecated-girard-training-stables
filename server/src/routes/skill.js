@@ -5,12 +5,12 @@ const {
 
 const express = require('express');
 
-const skillRouter = express.Router();
+const router = require('express').Router();
 
 // skillRouter.get('/skills/')
 
-skillRouter.route('/')
+router.route('/')
 .get(getAllSkills)
 .post(createSkills);
 
-module.exports = skillRouter;
+module.exports = router;

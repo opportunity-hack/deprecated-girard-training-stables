@@ -1,31 +1,35 @@
-const { ObjectId } = require("mongodb");
-const mongoose = require("./db/connector");
-const Skill = require("./skills");
-const UserType = require("./userTypes");
+const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
+const Skill = require('./skills');
 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true
   },
-  lastNAme: {
+  lastName: {
     type: String,
     required: false
   },
   userType: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: UserType,
-    required: true,
-    default: mongoose.Types.ObjectId('5fba413ce7179a09214d6bc0')
-  },
-  emailId: {
-    type:String,
+    type: String,
+    enum: ['instructor', 'volunteer', 'volunteer coordinator'],
     required: true
+  },
+  email: {
+    type: String,
+    required: [true, "Please provide username"],
+    unique: true,
+    match: [/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    "Please provide a valid email"]
   },
   phoneNumber: {
     type: String,
     required: true,
+    match: [/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, "Please provide a valid phone number"]
   },
+
+  // in inches
   height: {
     type: Number,
   },
@@ -38,15 +42,5 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
-// userSchema.method("toClient", function() {
-//   var obj = this.toObject();
-//   //Rename fields
-//   obj.id = obj._id;
-//   delete obj._id;
-//   delete obj.__v;
-//   delete obj.password;
-//   return obj;
-// });
-
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;
