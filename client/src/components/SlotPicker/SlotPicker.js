@@ -50,6 +50,36 @@ function SlotPicker(props) {
 
     let getData = async () => {
         // fetch(URL).then(res => resolve(res));
+        /* This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
+        const Http = new XMLHttpRequest();
+
+        Http.onreadystatechange = function() { // Needed for asynchronous GET
+            if (Http.readyState == 4 && Http.status == 200)
+                callback(Http.responseText);
+        }
+
+        const url = 'https://girard-server.herokuapp.com/'; // Does this need something extra to send to a specific router? .com/lessons? 
+        Http.open("GET", url, true); // True == asynchronous
+        Http.send();
+
+        return Http.responseText; //needed??
+        */
+        const sendEvent = async e => {
+            e.preventDefault();
+            try {
+                //const body = {type, make, model, year, isNew, color, price};
+                // eslint-disable-next-line
+                const response = await fetch("http://localhost:2222/lessons", {
+                    method: "GET",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(fD)
+                } );
+    
+                //window.location = "/";
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
         console.log('hi', mockData);
         return mockData;
     };
@@ -138,6 +168,16 @@ function SlotPicker(props) {
     }
 
     const signUp = (data) => {
+        /* This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
+        const Http = new XMLHttpRequest();
+        const url = 'https://girard-server.herokuapp.com/'; // Does this need something extra to send to a specific router? .com/lessons? 
+        Http.open("POST", url);
+        Http.send(data);
+        Http.onreadystatechange = (e) => {
+            console.log(Http.responseText)
+        }
+        */
+
         console.log('Signing up for time slot', data);
     }
 
