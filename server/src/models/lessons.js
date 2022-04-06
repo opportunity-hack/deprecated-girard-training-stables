@@ -24,35 +24,35 @@ const lessonSchema = new mongoose.Schema({
     },
     volunteers: {
       "barn crew" : {
-        required: Number,
+        minVolunteers: Number,
         signedUp: [{
           type: mongoose.Schema.Types.ObjectId,
           ref: User,
         }]
       },
       "pasture crew" : {
-        required: Number,
+        minVolunteers: Number,
         signedUp: [{
           type: mongoose.Schema.Types.ObjectId,
           ref: User,
         }]
       },
       "lesson assistant" : {
-        required: Number,
+        minVolunteers: Number,
         signedUp: [{
           type: mongoose.Schema.Types.ObjectId,
           ref: User,
         }]
       },
       "sidewalker" : {
-        required: Number,
+        minVolunteers: Number,
         signedUp: [{
           type: mongoose.Schema.Types.ObjectId,
           ref: User,
         }]
       },
       "horse leader" : {
-        required: Number,
+        minVolunteers: Number,
         signedUp: [{
           type: mongoose.Schema.Types.ObjectId,
           ref: User,

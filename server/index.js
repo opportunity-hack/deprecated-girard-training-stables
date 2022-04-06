@@ -27,12 +27,10 @@ const uri = process.env.ATLAS_URI;
 
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');
-const skillRouter = require('./src/routes/skill');
 const userRouter = require('./src/routes/user');
 
 app.use('/horses', horseRouter);
 app.use('/lessons', lessonRouter);
-app.use('/skills', skillRouter);
 app.use('/users', userRouter);
 
 app.use(errorHandler);

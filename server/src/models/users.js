@@ -1,6 +1,5 @@
 const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
-const Skill = require('./skills');
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -36,10 +35,23 @@ const userSchema = new mongoose.Schema({
   Age: {
     type: Number
   },
-  skills: [{
-    type: mongoose.Types.ObjectId,
-    ref: Skill
-  }]
+  horseExperience: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  horseRiding: {
+    type: Boolean
+  },
+  horseTacking: {
+    type: Boolean
+  },
+  horseGrooming: {
+    type: Boolean
+  },
+  horseLeading: {
+    type: Boolean
+  }
 });
 
 const User = mongoose.model('User', userSchema);
