@@ -111,6 +111,24 @@ function CreateEvent(props) {
         fD.endTime = formVal.endTime;
         fD.notes = "";
 
+        // This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
+        const sendEvent = async e => {
+            e.preventDefault();
+            try {
+                //const body = {type, make, model, year, isNew, color, price};
+                // eslint-disable-next-line
+                const response = await fetch("http://localhost:2222/lessons", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(fD)
+                } );
+    
+                //window.location = "/";
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+        
         console.log('Form Data', fD); // Store the event data we got
     }
 
