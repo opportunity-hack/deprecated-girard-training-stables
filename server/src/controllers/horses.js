@@ -9,6 +9,6 @@ module.exports.createHorses = asyncHandler(async function(req, res) {
 
 module.exports.getHorses = asyncHandler(async function(req, res) {
     const response = await Horse.find({});
-    res.status(200).json(response);
+    res.status(201).json(response);
 });
 

@@ -1,29 +1,18 @@
+const asyncHandler = require('express-async-handler');
 const User = require("../models/users");
 const { dataHandler } = require("../utils/responseHandler");
-// const { generateRandomUser } = require("../utils/seed-generator");
 
-module.exports.create = async function(req, res) {
-  try {
+module.exports.getUsers = asyncHandler(async function(req, res) {
+  const response = await User.find({});
+  res.status(200).json(response);
+});
+
+module.exports.createUser = asyncHandler(async function(req, res) {
     const response = await User.create(req.body);
-    return dataHandler({
-        status: 201,
-        data: response,
-      },
-      res
-    );
-  } catch (err) {
-    return dataHandler(
-      {
-        status: 500,
-        error: `Server error: ${err.message}.`
-      },
-      res
-    );
-  }
-};
+    res.status(200).json(response);
+});
 
-module.exports.update = async function(req, res) {
-  try {
+module.exports.updateUser = async function(req, res) {
     const { id } = req.body;
     const response = await User.findOneAndUpdate({
        _id: id 
@@ -31,21 +20,5 @@ module.exports.update = async function(req, res) {
       req.body,
       { new: true }
     );
-    
-    return dataHandler({
-        status: 201,
-        data: response,
-      },
-      res
-    );
-  } catch (err) {
-    return dataHandler(
-      {
-        status: 500,
-        error: `Server error: ${err.message}.`
-      },
-      res
-    );
-  }
 };
 

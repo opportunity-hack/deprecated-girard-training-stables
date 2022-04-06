@@ -1,4 +1,3 @@
-// const Position = require("../models/positions");
 const Skill = require("../models/skills");
 const Lesson = require('../models/lessons');
 const { dataHandler } = require("../utils/responseHandler");

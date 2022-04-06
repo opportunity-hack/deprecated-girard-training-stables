@@ -1,14 +1,13 @@
 const { 
-  create, 
-  update 
+  getUsers,
+  createUser, 
+  updateUser 
 } = require("../controllers/user");
-// const { verifyId } = require("../utils/middlewares");
-
 const express = require("express");
 const router = require('express').Router();
 
-router.route("/")
-.post(create)
-.put(update)
+router.route("/").get(getUsers)
+.post(createUser)
+.put(updateUser)
 
 module.exports = router;
