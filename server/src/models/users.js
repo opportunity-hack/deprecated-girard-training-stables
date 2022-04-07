@@ -27,34 +27,27 @@ const userSchema = new mongoose.Schema({
     required: true,
     match: [/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, "Please provide a valid phone number"]
   },
-
   // in inches
   height: {
     type: Number,
   },
-
   age: {
     type: Number
   },
-  
   horseExperience: {
     type: Number,
     required: true,
     default: 0
   },
-  
   horseRiding: {
     type: Boolean
   },
-  
   horseTacking: {
     type: Boolean
   },
-  
   horseGrooming: {
     type: Boolean
   },
- 
   horseLeading: {
     type: Boolean
   }
