@@ -32,23 +32,29 @@ const userSchema = new mongoose.Schema({
   height: {
     type: Number,
   },
-  Age: {
+
+  age: {
     type: Number
   },
+  
   horseExperience: {
     type: Number,
     required: true,
     default: 0
   },
+  
   horseRiding: {
     type: Boolean
   },
+  
   horseTacking: {
     type: Boolean
   },
+  
   horseGrooming: {
     type: Boolean
   },
+ 
   horseLeading: {
     type: Boolean
   }

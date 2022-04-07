@@ -22,9 +22,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// connect to remote mongoDB through environment variable ATLAS_URI
-const uri = process.env.ATLAS_URI;
-
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');
 const userRouter = require('./src/routes/user');
