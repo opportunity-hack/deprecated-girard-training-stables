@@ -30,6 +30,7 @@ function SlotPicker(props) {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
     let today = new Date();
+    let fD = {}; 
     const [currentMonth, setMonth] = useState(today.getMonth()); // months are zero-indexed; so this function would return 10 for November instead of 11
     const [currentYear, setYear] = useState(today.getFullYear());
 
