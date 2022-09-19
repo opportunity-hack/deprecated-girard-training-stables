@@ -8,15 +8,19 @@ module.exports.createLesson = asyncHandler(async function(req, res) {
     const response = await Lesson.insertMany(req.body);
     res.status(200).json(response);
     
-    /*sendLessonMail({
-      userEmail: 'developer.akash.s@gmail.com',
-      name: 'Amy'
-    });*/
+    sendLessonMail({
+      userEmail: '@gmail.com',
+      name: 'Aaron'
+    });
 });
 
 module.exports.getLesson = asyncHandler(async function(req, res) {
   const response = await Lesson.find({});
   res.status(200).json(response);
+  sendLessonMail({
+    userEmail: '@gmail.com',
+    name: 'Aaron'
+  });
 });
 
 module.exports.updateLesson = asyncHandler(async function(req, res) {
