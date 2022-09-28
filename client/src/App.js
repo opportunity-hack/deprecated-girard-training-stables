@@ -4,6 +4,9 @@ import Navbar from './components/Navbar/Navbar.js';
 import Signup from './components/Signup/Signup.js';
 import SlotPicker from './components/SlotPicker/SlotPicker';
 import CreateEvent from './components/CreateEvent/CreateEvent';
+import Login from './components/Login/Login';
+
+sessionStorage.setItem("email",'');
 
 function App() {
   return (
@@ -14,7 +17,7 @@ function App() {
             <Route path="/" component={Signup} exact />
             <Route path="/volunteer" component={SlotPicker} />
             <Route path="/create" component={CreateEvent} />
-            {/* <Route path="/shop" component={Shop} /> */}
+            <Route path="/login" component={Login} />
         </Switch>
       </main>
     </div>
