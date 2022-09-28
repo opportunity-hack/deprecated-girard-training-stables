@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 
 function Navbar() {
 
+    
+
     if(sessionStorage.getItem("email") != '')
     {
-        let loggedin = true;
+        loggedin = true;
     }
     else
     {
-        let loggedin = false;
+        loggedin = false;
     }
 
     if(loggedin){
