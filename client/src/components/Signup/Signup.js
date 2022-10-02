@@ -99,6 +99,15 @@ function Signup(props) {
 
     const handleSubmit = (event) => {
 
+        /* This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
+        const Http = new XMLHttpRequest();
+        const url = 'https://girard-server.herokuapp.com/'; // Does this need something extra to send to a specific router? .com/positions? 
+        Http.open("POST", url);
+        Http.send(formVal);
+        Http.onreadystatechange = (e) => {
+            console.log(Http.responseText)
+        }
+        */
         // event.preventDefault();
         console.log('Submitted form', formVal);
 
