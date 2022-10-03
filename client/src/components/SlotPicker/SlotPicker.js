@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import './SlotPicker.css';
@@ -15,6 +15,15 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import SimpleModal from '../Modal/Modal';
 import CustomAccordion from '../Accordion/Accordion';
 import InfoIcon from '@material-ui/icons/Info';
+import {
+    Calendar,
+    Views,
+    DateLocalizer,
+    momentLocalizer,
+  } from 'react-big-calendar'
+import moment from 'moment';
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import events from '../../mock/events';
 
 
 function SlotPicker(props) {
@@ -192,6 +201,13 @@ function SlotPicker(props) {
     const createNewEvent = () => {
         history.push(`/create`);
     }
+
+    const localizer = momentLocalizer(moment)
+
+    const handleSelectEvent = useCallback(
+    (event) => window.alert(event.title),
+    []
+  )
     
     let content = (
         <div className="calendar-container">
@@ -211,6 +227,16 @@ function SlotPicker(props) {
             <Card style={{minHeight: 'fit-content', padding: '1%'}}>
             <div className="grid">
                 { displaydays.map((day, dayIndex) => <div key={dayIndex} style={{fontWeight: 'bold'}}>{day}</div> ) }
+            </div>
+            <div>
+                <Calendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                onSelectEvent={handleSelectEvent}
+                style={{ height: 800 }}
+                />
             </div>
             <div className="grid five-rows">
                 {
