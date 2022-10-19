@@ -3,7 +3,17 @@ const User = require("../models/users");
 const { dataHandler } = require("../utils/responseHandler");
 
 module.exports.getUsers = asyncHandler(async function(req, res) {
-  const response = await User.find({});
+  let email = req.query.email;
+  var response;
+  
+  if (email) 
+  {
+    response = await User.findOne({ email: email});
+  }
+  else
+  {
+    response = await User.find({});
+  }
   res.status(200).json(response);
 });
 
