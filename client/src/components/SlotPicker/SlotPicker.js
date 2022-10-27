@@ -205,7 +205,13 @@ function SlotPicker(props) {
     const localizer = momentLocalizer(moment)
 
     const handleSelectEvent = useCallback(
-    (event) => window.alert(event.title),
+    (event) => {
+        let temp = <CustomAccordion data={event} handleClose={handleClose} signUp={signUp} />
+
+        setBody(temp);
+
+        openModal();
+    },
     []
   )
     
