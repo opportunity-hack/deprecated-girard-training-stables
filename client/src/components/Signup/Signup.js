@@ -18,6 +18,7 @@ import axios from 'axios';
 import {useHistory} from 'react-router-dom';
 import { Auth0Context, useAuth0 } from "@auth0/auth0-react";
 
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -58,24 +59,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Signup = () => {
+//variable to ensure that axios only checks once
+var counter = 0;
+
+function Signup() {
     //Pull in auth 0
     const { user, isAuthenticated, isLoading } = useAuth0();
     let history = useHistory ();
-    if(isAuthenticated)
-    {
-        var safeEmail = user.email;
-    }
-    //Check if a user with the email exists
-    axios.get('/users', { params: { email: safeEmail } } )
-    .then(res => {
-        if (res.data != null)
-        {
-            history.push("/volunteer");
-        }
-    })
-    .catch(err => console.log(err.data));
 
+
+    if(counter == 0)
+    {
+        if(isAuthenticated)
+         {
+            setTimeout(function() {return 0;}, 2000)
+            var safeEmail = user.email;
+        }
+        else
+        {
+            var safeEmail = "BAD@gmail.com"
+        }
+        //Check if a user with the email exists
+        axios.get('/users', { params: { email: safeEmail } } )
+        .then(res => {
+            console.log('Signup-check',res.data)
+            if (res.data != null)
+            {
+                history.push("/volunteer");
+            }
+        })
+        .catch(err => console.log(err.data));
+    }
+    //Increment to ensure only one run of axio
+    counter = counter + 1;
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
@@ -121,7 +137,7 @@ const Signup = () => {
 
 
     const handleSubmit = (event) => {
-
+        console.log("Handled Submit Start")
         /* This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
         const Http = new XMLHttpRequest();
         const url = 'https://girard-server.herokuapp.com/'; // Does this need something extra to send to a specific router? .com/positions? 
