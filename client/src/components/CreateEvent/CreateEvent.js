@@ -1,4 +1,5 @@
 import DatePicker from '../Datepicker/Datepicker';
+import {getBearerToken, authenticate} from "../../getToken"
 
 import React, { useState, useEffect } from 'react';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -49,7 +50,18 @@ function CreateEvent(props) {
 
     useEffect(() => {
         //call user api to get users
-        axios.get('/users')
+        allUsers = authenticate('users');
+        //allUsers = res.data;
+        console.log("RESULT: ", allUsers);
+        var allUsers = allUsers.filter(user => user.userType == "volunteer");
+        var map = new Map(allUsers.map(obj => {
+            return [obj.firstName, obj];
+        }));
+        console.log("map: ", map);
+        setInstructors(map);
+        setInstructorsArr(Array.from(map.keys()));
+
+        /*axios.get('/users')
         .then(res => {
             console.log('users recieved');
             allUsers = res.data;
@@ -63,6 +75,7 @@ function CreateEvent(props) {
             setInstructorsArr(Array.from(map.keys()));
         })
         .catch(err => console.log(err.data));
+        */
 
         //console.log("All Users: ", allUsers);
 

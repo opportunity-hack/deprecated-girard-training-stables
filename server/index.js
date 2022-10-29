@@ -28,7 +28,7 @@ var jwtCheck = jwt({
         jwksRequestsPerMinute: 5,
         jwksUri: 'https://dev-6ir-6qcd.us.auth0.com/.well-known/jwks.json'
   }),
-  audience: 'https://test-api/',
+  audience: 'https://girard-server.herokuapp.com', // https://girard-server.herokuapp.com
   issuer: 'https://dev-6ir-6qcd.us.auth0.com/',
   algorithms: ['RS256']
 });
