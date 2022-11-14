@@ -89,7 +89,7 @@ const [subExpanded, setSubExpanded] = React.useState('');
                                   <AccordionSummary id={`subpanel-${index}-header`} >
                                     <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
                                         <div>{data.volunteers[pos].signedUp.length} of {data.volunteers[pos].minVolunteers} filled</div>
-                                        {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 ? <Button variant="contained" color="primary" onClick={handleSignUpForEvent(pos)}>Sign up</Button> : <></>}
+                                        {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 ? <Button variant="contained" color="primary" onClick={() => handleSignUpForEvent(pos)}>Sign up</Button> : <></>}
                                         {/* <Button key={v4()} variant="contained" color="primary" onClick={handleSignUpForEvent(pos)}>Sign up</Button> */}
                                     </div>
                                   </AccordionSummary>
