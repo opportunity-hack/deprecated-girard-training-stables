@@ -67,6 +67,31 @@ function Signup() {
     const { user, isAuthenticated, isLoading } = useAuth0();
     let history = useHistory ();
 
+
+    if(counter == 0)
+    {
+        if(isAuthenticated)
+         {
+            setTimeout(function() {return 0;}, 2000)
+            var safeEmail = user.email;
+        }
+        else
+        {
+            var safeEmail = "BAD@gmail.com"
+        }
+        //Check if a user with the email exists
+        axios.get('/users', { params: { email: safeEmail } } )
+        .then(res => {
+            console.log('Signup-check',res.data)
+            if (res.data != null)
+            {
+                history.push("/volunteer");
+            }
+        })
+        .catch(err => console.log(err.data));
+    }
+    //Increment to ensure only one run of axio
+    counter = counter + 1;
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
