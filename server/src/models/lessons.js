@@ -3,16 +3,12 @@ const Horse = require('./horses');
 const User = require('./users');
 
 const lessonSchema = new mongoose.Schema({
-  // store dates in UTC timezone
-  title: {
-    type: String,
-    required: true,
-  },
-  start: {
+  // store dates in UTC timezone  
+  startTime: {
       type: Date,
       required: true,
   },
-  end: {
+  endTime: {
     type: Date,
     required: true,
   },

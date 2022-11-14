@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import './Accordion.css';
-import { v4 } from 'uuid';
 
 const Accordion = withStyles({
   root: {
@@ -66,40 +65,49 @@ const [subExpanded, setSubExpanded] = React.useState('');
 
   let data = props.data;
 
-  const handleSignUpForEvent = (position) => {
-    //TODO: SIGN UP FLOW
-    //window.alert(position);
-    console.log(position);
-  }
-
   return (
+
         <div>
             <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
-            <div className="modal-heading">{data.title}- {data.start.toDateString()}</div>
+            <div className="modal-heading">{data.date}</div>
             {
-              data && Object.keys(data.volunteers).map((pos, index) => {
-                return (
-                  <div key={v4()}>
-                      <Accordion key={v4()} square expanded={expanded === `panel-${index}`} onChange={handleChange(`panel-${index}`)}>
-                          <AccordionSummary aria-controls="panel1d-content" id={`panel1d-header-${index}`}>
-                            <Typography >{pos}</Typography>
-                          </AccordionSummary>
-                          <AccordionDetails >
-                              <Accordion key={v4()} square expanded={subExpanded === `subpanel-${pos}-${index}`} onChange={handleSubChange(`subpanel-${pos}-${index}`)}>
-                                  <AccordionSummary id={`subpanel-${index}-header`} >
-                                    <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
-                                        <div>{data.volunteers[pos].signedUp.length} of {data.volunteers[pos].minVolunteers} filled</div>
-                                        {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 ? <Button variant="contained" color="primary" onClick={() => handleSignUpForEvent(pos)}>Sign up</Button> : <></>}
-                                        {/* <Button key={v4()} variant="contained" color="primary" onClick={handleSignUpForEvent(pos)}>Sign up</Button> */}
-                                    </div>
-                                  </AccordionSummary>
-                              </Accordion>
-                          </AccordionDetails>
-                      </Accordion>
-                  </div>
-                )
-              })
+                data && data.positions && Object.keys(data.positions).length && Object.keys(data.positions).map((pos, index) => {
+                    return (
+                        <Accordion key={index} square expanded={expanded === `panel-${index}`} onChange={handleChange(`panel-${index}`)}>
+                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                            <Typography>{pos}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {
+                                    data.positions[pos].timeSlots && data.positions[pos].timeSlots.length && data.positions[pos].timeSlots.map((time, timeIndex) => {
+                                        return (
+                                            <Accordion key={timeIndex} square expanded={subExpanded === `subpanel-${pos.name}-${timeIndex}`} onChange={handleSubChange(`subpanel-${pos.name}-${timeIndex}`)}>
+                                                <AccordionSummary id={`subpanel-${timeIndex}-header`} >
+                                                    <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
+                                                        <h3>{time.startTime} - {time.endTime}</h3>
+                                                        <div>{time.signedUp} of {time.reqd} filled</div>
+                                                        <Button variant="contained" color="primary" onClick={() => props.signUp(time)}>Sign up</Button>
+                                                    </div>
+
+                                                </AccordionSummary>
+                                                <AccordionDetails>
+                                                    { time && time.volunteers && time.volunteers.map((vol, volInd) => {
+                                                         return (<div key={volInd} style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center'}}>
+                                                         <h3>{vol.name}</h3>
+                                                         <Button variant="contained" className="red-button" style={{backgroundColor: '#aa0000 !important'}} onClick={() => props.cancel(time)}>Cancel</Button>
+                                                     </div>)
+                                                    }) }
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        )
+                                    })
+                                }
+                            </AccordionDetails>
+                        </Accordion>
+                    )
+                })
             }
+            
         </div>
   );
 }
