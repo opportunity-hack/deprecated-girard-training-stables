@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import './Accordion.css';
+import { v4 } from 'uuid';
 
 const Accordion = withStyles({
   root: {
@@ -76,29 +77,29 @@ const [subExpanded, setSubExpanded] = React.useState('');
             <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
             <div className="modal-heading">{data.title}- {data.start.toDateString()}</div>
             {
-                data && Object.keys(data.volunteers).map((pos, index) => {
-                    return (
-                      <div>
-                          <Accordion key={index} square expanded={expanded === `panel-${index}`} onChange={handleChange(`panel-${index}`)}>
-                              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                                <Typography>{pos}</Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                  <Accordion key={index} square expanded={subExpanded === `subpanel-${pos}-${index}`} onChange={handleSubChange(`subpanel-${pos}-${index}`)}>
-                                      <AccordionSummary id={`subpanel-${index}-header`} >
-                                          <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
-                                              <div>{data.volunteers[pos].signedUp.length} of {data.volunteers[pos].minVolunteers} filled</div>
-                                              {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 ? <Button key={index} variant="contained" color="primary" onClick={handleSignUpForEvent(pos)}>Sign up</Button> : <></>}
-                                          </div>
-                                      </AccordionSummary>
-                                  </Accordion>
-                              </AccordionDetails>
-                          </Accordion>
-                      </div>
-                    )
-                })
+              data && Object.keys(data.volunteers).map((pos, index) => {
+                return (
+                  <div key={v4()}>
+                      <Accordion key={v4()} square expanded={expanded === `panel-${index}`} onChange={handleChange(`panel-${index}`)}>
+                          <AccordionSummary aria-controls="panel1d-content" id={`panel1d-header-${index}`}>
+                            <Typography >{pos}</Typography>
+                          </AccordionSummary>
+                          <AccordionDetails >
+                              <Accordion key={v4()} square expanded={subExpanded === `subpanel-${pos}-${index}`} onChange={handleSubChange(`subpanel-${pos}-${index}`)}>
+                                  <AccordionSummary id={`subpanel-${index}-header`} >
+                                    <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
+                                        <div>{data.volunteers[pos].signedUp.length} of {data.volunteers[pos].minVolunteers} filled</div>
+                                        {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 ? <Button variant="contained" color="primary" onClick={handleSignUpForEvent(pos)}>Sign up</Button> : <></>}
+                                        {/* <Button key={v4()} variant="contained" color="primary" onClick={handleSignUpForEvent(pos)}>Sign up</Button> */}
+                                    </div>
+                                  </AccordionSummary>
+                              </Accordion>
+                          </AccordionDetails>
+                      </Accordion>
+                  </div>
+                )
+              })
             }
-            
         </div>
   );
 }

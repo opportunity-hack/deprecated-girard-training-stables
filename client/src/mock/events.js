@@ -70,6 +70,10 @@ export default [
         signedUp: [{
           firstName: "Shreyas",
           lastName: "Narayanan"
+        },
+        {
+          firstName: "Shreyas",
+          lastName: "Narayanan"
         }]
       },
       "horse leader": {
