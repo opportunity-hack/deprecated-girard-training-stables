@@ -23,8 +23,8 @@ ReactDOM.render(
   <Auth0Provider
     domain="dev-6ir-6qcd.us.auth0.com"
     clientId="YaKtx23CDf33oUGDlVte9TpLpvT5u2oM"
-    redirectUri="https://girard-client.herokuapp.com/volunteer"
-    //redirectUri="https://localhost:3000/volunteer"
+    //redirectUri="https://girard-client.herokuapp.com/signup"
+    redirectUri="http://localhost:3000/signup"
   >
     <React.StrictMode>
       <BrowserRouter>
