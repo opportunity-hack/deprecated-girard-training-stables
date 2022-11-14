@@ -14,10 +14,13 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Error from '../Error/Error';
+import axios from 'axios';
+import {useHistory} from 'react-router-dom';
+import { Auth0Context, useAuth0 } from "@auth0/auth0-react";
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -56,16 +59,48 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Signup(props) {
+//variable to ensure that axios only checks once
+var counter = 0;
 
+function Signup() {
+    //Pull in auth 0
+    const { user, isAuthenticated, isLoading } = useAuth0();
+    let history = useHistory ();
+
+
+    if(counter == 0)
+    {
+        if(isAuthenticated)
+         {
+            setTimeout(function() {return 0;}, 2000)
+            var safeEmail = user.email;
+        }
+        else
+        {
+            var safeEmail = "BAD@gmail.com"
+        }
+        //Check if a user with the email exists
+        axios.get('/users', { params: { email: safeEmail } } )
+        .then(res => {
+            console.log('Signup-check',res.data)
+            if (res.data != null)
+            {
+                history.push("/volunteer");
+            }
+        })
+        .catch(err => console.log(err.data));
+    }
+    //Increment to ensure only one run of axio
+    counter = counter + 1;
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
+
+
     const [formVal, setFormValue] = React.useState({
         firstname: '',
         lastname: '',
         phone: '',
         email: '',
-        password: '',
         age: '',
         height: '',
         horseExperience: false,
@@ -75,6 +110,8 @@ function Signup(props) {
         grooming: false,
         leading: false
     });
+
+
     
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
@@ -97,8 +134,10 @@ function Signup(props) {
         });
     }
 
-    const handleSubmit = (event) => {
 
+
+    const handleSubmit = (event) => {
+        console.log("Handled Submit Start")
         /* This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
         const Http = new XMLHttpRequest();
         const url = 'https://girard-server.herokuapp.com/'; // Does this need something extra to send to a specific router? .com/positions? 
@@ -109,11 +148,39 @@ function Signup(props) {
         }
         */
         // event.preventDefault();
-        console.log('Submitted form', formVal);
+       
+       if(isAuthenticated) 
+       {
+            var experienceUpdated;
+            if(formVal.horseExpYrs = '')
+                experienceUpdated = 0;
+            else
+                experienceUpdated = formVal.horseExpYrs;
 
+
+            const submitForm = {
+                "firstname": formVal.firstname,
+                "lastname": formVal.lastname,
+                "phone": formVal.phone,
+                "email": user.email,
+                "age": Number(formVal.age),
+                "height": Number(formVal.height),
+                "horseExperience": experienceUpdated,
+                "riding": formVal.riding,
+                "tacking": formVal.tacking,
+                "grooming": formVal.grooming,
+                "leading": formVal.leading
+            }
+            axios.post('/users', submitForm)
+            .then(res => {})
+            .catch(err => console.log(err.data))
+
+            history.push("/volunteer");
+        }
     }
 
-    return (
+
+    return (  isAuthenticated && (
         <div className="signup-form col-flex card">
             <div className="form-content col-flex flex-grow">
                 <div className="heading">Sign Up</div>
@@ -135,10 +202,7 @@ function Signup(props) {
                                 </div>
                             </div>
                             <div>
-                                <Input className="input-field" type="email" name="email" value={formVal.email} onChange={handleChange} placeholder="Email"/>
-                            </div>
-                            <div>
-                                <Input className="input-field" type="password" name="password" value={formVal.password} onChange={handleChange} placeholder="Password"/>
+                                <Input editable={false} className="input-field" type="email" name="email" value={user.email} onChange={handleChange} placeholder={user.email}/>
                             </div>
                             <div>
                                 <Input className="input-field" type="tel" name="phone" value={formVal.phone} onChange={handleChange} placeholder="Phone Number"/>
@@ -147,7 +211,7 @@ function Signup(props) {
                                 <Input className="input-field" type="number" name="age" value={formVal.age} onChange={handleChange} placeholder="Age"/>
                             </div>
                             <div>
-                                <Input className="input-field" type="number" name="height" value={formVal.height} onChange={handleChange} placeholder="Height"/>
+                                <Input className="input-field" type="number" name="height" value={formVal.height} onChange={handleChange} placeholder="Height in Inches"/>
                             </div>
                             <div className="filler"></div>
                             
@@ -198,8 +262,8 @@ function Signup(props) {
                     </form>
                 </div>
             </div>
-        </div>
-    );
-}
+        </div> )
+    ); 
+} 
 
 export default Signup;

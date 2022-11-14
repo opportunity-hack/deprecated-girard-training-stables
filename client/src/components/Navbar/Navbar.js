@@ -10,7 +10,8 @@ function Navbar() {
     const { logout, user, isAuthenticated, isLoading } = useAuth0();
 
         return  (
-            isAuthenticated && (
+            isAuthenticated && 
+            (
             <div className="navbar">
                 <div className="content">
                     <span className="npo-heading">Girard Training Stables</span>
@@ -22,7 +23,9 @@ function Navbar() {
                     <li>
                         <Link to="/profile" style={{ textDecoration: 'none' }}>Profile</Link>
                     </li>
-                    <Button color="primary" variant="text" onClick={() => logout({ returnTo: "https://girard-client.herokuapp.com" })} className="button" id="Log_Out_Button">Log Out</Button>
+                    <li>
+                        <Link onClick={() => logout({ returnTo: "https://girard-client.herokuapp.com" })} style={{ textDecoration: 'none' }}>Log Out</Link>
+                    </li>
                     </ul>
                 </div>
             </div>
