@@ -111,40 +111,6 @@ function Signup() {
         leading: false
     });
 
-    if (isLoading) {
-        return <div>Loading ...</div>;
-      }
-
-
-
-
-    if(counter == 0)
-    {
-        setTimeout(function() {return 0;}, 8000);
-        if(isAuthenticated)
-        {
-            var safeEmail = user.email;
-        }
-        else
-        {
-            var safeEmail = "BAD@gmail.com"
-        }
-        
-        //Check if a user with the email exists
-        console.log(safeEmail);
-        axios.get('/users', { params: { email: safeEmail } } )
-        .then(res => {
-            console.log('Signup-check',res.data)
-            if (res.data != null)
-            {
-                history.push("/volunteer");
-            }
-        })
-        .catch(err => console.log(err.data));
-    }
-    //Increment to ensure only one run of axio
-    counter = counter + 1;
-
 
     
     const handleTabChange = (event, newValue) => {
@@ -171,7 +137,7 @@ function Signup() {
 
 
     const handleSubmit = (event) => {
-        console.log("Handled Submit Start");
+        console.log("Handled Submit Start")
         /* This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
         const Http = new XMLHttpRequest();
         const url = 'https://girard-server.herokuapp.com/'; // Does this need something extra to send to a specific router? .com/positions? 
@@ -191,32 +157,30 @@ function Signup() {
             else
                 experienceUpdated = formVal.horseExpYrs;
 
-            console.log("Pre Form Conversion")
+
             const submitForm = {
-                "firstName": formVal.firstname,
-                "lastName": formVal.lastname,
-                "userType": 'volunteer',
+                "firstname": formVal.firstname,
+                "lastname": formVal.lastname,
+                "phone": formVal.phone,
                 "email": user.email,
-                "phoneNumber": formVal.phone,
-                "height": Number(formVal.height),
                 "age": Number(formVal.age),
-                "horseExperience": Number(experienceUpdated),
-                "horseRiding": formVal.riding,
-                "horseTacking": formVal.tacking,
-                "horseGrooming": formVal.grooming,
-                "horseLeading": formVal.leading
+                "height": Number(formVal.height),
+                "horseExperience": experienceUpdated,
+                "riding": formVal.riding,
+                "tacking": formVal.tacking,
+                "grooming": formVal.grooming,
+                "leading": formVal.leading
             }
-            console.log("Post Form Conversion");
             axios.post('/users', submitForm)
-                .then(res => console.log('Submit Finish', submitForm))
-                .catch(err => console.log(err.data))
+            .then(res => {})
+            .catch(err => console.log(err.data))
 
             history.push("/volunteer");
         }
     }
 
 
-    return ( isAuthenticated && (
+    return (  isAuthenticated && (
         <div className="signup-form col-flex card">
             <div className="form-content col-flex flex-grow">
                 <div className="heading">Sign Up</div>
