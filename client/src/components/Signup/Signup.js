@@ -66,32 +66,6 @@ function Signup() {
     //Pull in auth 0
     const { user, isAuthenticated, isLoading } = useAuth0();
     let history = useHistory ();
-
-
-    if(counter == 0)
-    {
-        if(isAuthenticated)
-         {
-            setTimeout(function() {return 0;}, 2000)
-            var safeEmail = user.email;
-        }
-        else
-        {
-            var safeEmail = "BAD@gmail.com"
-        }
-        //Check if a user with the email exists
-        axios.get('/users', { params: { email: safeEmail } } )
-        .then(res => {
-            console.log('Signup-check',res.data)
-            if (res.data != null)
-            {
-                history.push("/volunteer");
-            }
-        })
-        .catch(err => console.log(err.data));
-    }
-    //Increment to ensure only one run of axio
-    counter = counter + 1;
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
@@ -111,6 +85,38 @@ function Signup() {
         leading: false
     });
 
+
+
+
+    if (isLoading) {
+        return <div>Loading ...</div>;
+      }
+
+
+    if(counter == 0)
+    {
+        if(isAuthenticated)
+         {
+            var safeEmail = user.email;
+        }
+        else
+        {
+            var safeEmail = "BAD@gmail.com"
+        }
+        //Check if a user with the email exists
+        console.log('Email checked: ', safeEmail);
+        axios.get('/users', { params: { email: safeEmail } } )
+        .then(res => {
+            console.log('Signup-check',res.data)
+            if (res.data != null)
+            {
+                history.push("/volunteer");
+            }
+        })
+        .catch(err => console.log(err.data));
+    }
+    //Increment to ensure only one run of axio
+    counter = counter + 1;
 
     
     const handleTabChange = (event, newValue) => {

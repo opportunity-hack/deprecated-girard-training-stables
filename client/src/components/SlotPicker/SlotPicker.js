@@ -16,6 +16,7 @@ import SimpleModal from '../Modal/Modal';
 import CustomAccordion from '../Accordion/Accordion';
 import CreateEvent from '../CreateEvent/CreateEvent';
 import InfoIcon from '@material-ui/icons/Info';
+import { useAuth0 } from "@auth0/auth0-react";
 import {
     Calendar,
     Views,
@@ -29,13 +30,20 @@ import axios from 'axios';
 
 
 function SlotPicker(props) {
+    const { user, isAuthenticated, isLoading } = useAuth0();
     const [state, setState] = useState([]);
     const [positionFilter, setPositionFilter] = useState('');
     const [dayOfWeek, setDayOfWeek] = useState('');
     const [open, setOpen] = React.useState(false);
+    const [Admin, setAdmin] = React.useState(false);
     const [body, setBody] = React.useState('');
     const history = useHistory();
     const [events, setEvents] = React.useState([]);
+
+    //Gets the data of today to set the starting area
+    let today = new Date();
+    const [currentMonth, setMonth] = useState(today.getMonth()); // months are zero-indexed; so this function would return 10 for November instead of 11
+    const [currentYear, setYear] = useState(today.getFullYear());
 
    //Array to display the day header
     const displaydays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -43,13 +51,6 @@ function SlotPicker(props) {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'All'];
     //Array for display of months and calculation of data
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-
-    //Gets the data of today to set the starting area
-    let today = new Date();
-    const [currentMonth, setMonth] = useState(today.getMonth()); // months are zero-indexed; so this function would return 10 for November instead of 11
-    const [currentYear, setYear] = useState(today.getFullYear());
-
 
     useEffect(() => {
         async function fetchData() {
@@ -61,6 +62,71 @@ function SlotPicker(props) {
         // let dayOfWeek = 3;
         // let emptySlots = new Array(dayOfWeek);
     }, []);
+
+
+
+    const useStyles = makeStyles((theme) => ({
+        formControl: {
+          margin: theme.spacing(1),
+          minWidth: '10rem',
+          height: '4rem'
+        }
+    }));
+
+    const classes = useStyles();
+
+
+    const handleCreateEvent = useCallback(
+        () => {
+            let temp = <CreateEvent data={events} submit={setEvents} handleClose={handleClose}/>
+    
+            setBody(temp);
+    
+            openModal();
+        },
+        [events]
+      )
+
+    const handleSelectEvent = useCallback(
+        (event) => {
+            let temp = <CustomAccordion data={event} handleClose={handleClose} signUp={signUp} />
+    
+            setBody(temp);
+    
+            openModal();
+        },
+        []
+      )
+
+
+
+
+
+    if (isLoading) {
+        return <div>Loading ...</div>;
+      }
+
+    if(isAuthenticated)
+    {
+        var safeEmail = user.email;
+     }
+     else
+     {
+        var safeEmail = "BAD@gmail.com"
+     }
+     //Check if a user with the email exists
+     console.log('Email checked: ', safeEmail);
+     axios.get('/users', { params: { email: safeEmail } } )
+     .then(res => {
+        console.log('User Returned:',res.data);
+        console.log('User Type:',res.data.userType);
+        if (res.data.userType == 'volunteer coordinator')
+        {
+            setAdmin(true);
+        }
+     })
+     .catch(err => console.log("Error-AdminCheck: ", err.data));
+
     
         
     //     async function fetchData(month, year) {
@@ -156,16 +222,6 @@ function SlotPicker(props) {
         });
     }
 
-    const useStyles = makeStyles((theme) => ({
-        formControl: {
-          margin: theme.spacing(1),
-          minWidth: '10rem',
-          height: '4rem'
-        }
-    }));
-
-    const classes = useStyles();
-
     const changeMonth = (type) => {
         let month;
         switch(type) {
@@ -227,29 +283,9 @@ function SlotPicker(props) {
     };
 
 
-    const handleCreateEvent = useCallback(
-        () => {
-            let temp = <CreateEvent data={events} submit={setEvents} handleClose={handleClose}/>
-    
-            setBody(temp);
-    
-            openModal();
-        },
-        [events]
-      )
 
     const localizer = momentLocalizer(moment)
 
-    const handleSelectEvent = useCallback(
-    (event) => {
-        let temp = <CustomAccordion data={event} handleClose={handleClose} signUp={signUp} />
-
-        setBody(temp);
-
-        openModal();
-    },
-    []
-  )
     
     let content = (
         <div className="calendar-container">
@@ -281,7 +317,7 @@ function SlotPicker(props) {
                 />
             </div>
 
-            <AddCircleIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={handleCreateEvent} className="create-event"/>
+            {Admin && <AddCircleIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={handleCreateEvent} className="create-event"/>}
             <InfoIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={showInfo} className="show-info"/>
 
             <div className="event">
