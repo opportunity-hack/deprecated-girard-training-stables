@@ -36,7 +36,7 @@ var jwtCheck = jwt({
 // middleware
 app.use(cors());
 app.use(express.json());
-app.use(jwtCheck);
+//app.use(jwtCheck);
 
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');

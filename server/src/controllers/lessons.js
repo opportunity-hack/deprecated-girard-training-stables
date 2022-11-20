@@ -5,16 +5,20 @@ const { sendLessonMail } = require("./../utils/emailer");
 const asyncHandler = require('express-async-handler');
 
 module.exports.createLesson = asyncHandler(async function(req, res) {
+    console.log("started creating lesson");
     const response = await Lesson.create({
-      startTime: req.body.startTime,
-      endTime: req.body.endTime,
+      start: req.body.start,
+      end: req.body.end,
       instructor: req.body.instructor,
       volunteers: req.body.volunteers,
       horses: req.body.horses,
-      notes: req.body.notes
+      notes: req.body.notes,
+      title: req.body.title
     })
     res.status(200).json(response);
-    
+
+    console.log("about to send lesson mail");
+
     sendLessonMail({
       userEmail: '@gmail.com',
       name: 'Aaron'
