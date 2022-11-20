@@ -15,6 +15,7 @@ import Button from '@material-ui/core/Button';
 import Card from '../Card/Card';
 import Timepicker from '../Timepicker/Timepicker';
 import axios from 'axios';
+import moment from 'moment';
 
 function CreateEvent(props) {
 
@@ -185,23 +186,24 @@ function CreateEvent(props) {
         //let start = formVal.startDate + formVal.startTime;
         //let end = formVal.endData + formVal.endTime;
         // new Date(year, monthIndex, day, hours, minutes)
+        // let startYear = formVal.startDate.substring(0,4);
+        // let startMonth = parseInt(formVal.startDate.substring(5,7)) - 1;
+        // let startDay = formVal.startDate.substring(8);
+        // let startHour = formVal.startTime.substring(0,2);
+        // let startMinute = formVal.startTime.substring(3);
 
-        let startYear = formVal.startDate.substring(0,4);
-        let startMonth = parseInt(formVal.startDate.substring(5,7)) - 1;
-        let startDay = formVal.startDate.substring(8);
-        let startHour = formVal.startTime.substring(0,2);
-        let startMinute = formVal.startTime.substring(3);
+        // let startDate = new Date(startYear, startMonth, startDay, startHour, startMinute);
 
-        let startDate = new Date(startYear, startMonth, startDay, startHour, startMinute);
+        // let endYear = formVal.endDate.substring(0,4);
+        // let endMonth = parseInt(formVal.endDate.substring(5,7)) - 1;
+        // let endDay = formVal.endDate.substring(8);
+        // let endHour = formVal.endTime.substring(0,2);
+        // let endMinute = formVal.endTime.substring(3);
 
-        let endYear = formVal.endDate.substring(0,4);
-        let endMonth = parseInt(formVal.endDate.substring(5,7)) - 1;
-        let endDay = formVal.endDate.substring(8);
-        let endHour = formVal.endTime.substring(0,2);
-        let endMinute = formVal.endTime.substring(3);
+        // let endDate = new Date(endYear, endMonth, endDay, endHour, endMinute);
 
-        let endDate = new Date(endYear, endMonth, endDay, endHour, endMinute);
-
+        let start = moment(formVal.startDate + formVal.startTime, 'YYYY-MM-DDhh:mm').toDate();
+        let end = moment(formVal.endDate + formVal.endTime, 'YYYY-MM-DDhh:mm').toDate();
         // console.log("startD:", formVal.startDate);
         // console.log("endD:", formVal.endDate);
         // console.log("startT:", formVal.startTime);
@@ -224,8 +226,8 @@ function CreateEvent(props) {
         // let end = Date.parse(formVal.endDate + formVal.endTime);
 
         const form = {
-            start: startDate,
-            end: endDate,
+            start: start,
+            end: end,
             instructor: fD.instructor,
             volunteers: fD.volunteers,
             horses: null,

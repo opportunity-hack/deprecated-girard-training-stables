@@ -52,11 +52,11 @@ function SlotPicker(props) {
 
     useEffect(() => {
         async function fetchData() {
-            let result = await getData();
-            console.log("result:", result);
+            await getData();
             //setEvents(result);
         }
         fetchData();
+        console.log("result:", events);
         // let dayOfWeek = 3;
         // let emptySlots = new Array(dayOfWeek);
     }, []);
@@ -84,7 +84,7 @@ function SlotPicker(props) {
         //let result = "";
         axios.get('/lessons')
             .then(response => {
-                console.log("response:", response.data);
+                console.log("response:", response);
                 setEvents(response.data);
                 //return response.data;
             })
