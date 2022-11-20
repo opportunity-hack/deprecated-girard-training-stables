@@ -14,6 +14,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import SimpleModal from '../Modal/Modal';
 import CustomAccordion from '../Accordion/Accordion';
+import CreateEvent from '../CreateEvent/CreateEvent';
 import InfoIcon from '@material-ui/icons/Info';
 import {
     Calendar,
@@ -34,7 +35,7 @@ function SlotPicker(props) {
     const [open, setOpen] = React.useState(false);
     const [body, setBody] = React.useState('');
     const history = useHistory();
-    const [events, setEvents] = React.useState([{}]);
+    const [events, setEvents] = React.useState([]);
 
    //Array to display the day header
     const displaydays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -75,8 +76,6 @@ function SlotPicker(props) {
     //     fetchData(currentMonth + 1, currentYear);
         
     // }, [currentMonth, currentYear]);
-    
-
 
     //Gets data from data !!!!CURRENTLY USING MOCK DATA!!!
     let getData = async () => {
@@ -228,9 +227,16 @@ function SlotPicker(props) {
     };
 
 
-    const createNewEvent = () => {
-        history.push(`/create`);
-    }
+    const handleCreateEvent = useCallback(
+        () => {
+            let temp = <CreateEvent data={events} submit={setEvents} handleClose={handleClose}/>
+    
+            setBody(temp);
+    
+            openModal();
+        },
+        [events]
+      )
 
     const localizer = momentLocalizer(moment)
 
@@ -275,7 +281,7 @@ function SlotPicker(props) {
                 />
             </div>
 
-            <AddCircleIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={createNewEvent} className="create-event"/>
+            <AddCircleIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={handleCreateEvent} className="create-event"/>
             <InfoIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={showInfo} className="show-info"/>
 
             <div className="event">

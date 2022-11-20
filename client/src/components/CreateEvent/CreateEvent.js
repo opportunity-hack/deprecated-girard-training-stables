@@ -12,12 +12,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import CloseIcon from '@material-ui/icons/Close';
 import Card from '../Card/Card';
 import Timepicker from '../Timepicker/Timepicker';
 import axios from 'axios';
 import moment from 'moment';
 
-function CreateEvent(props) {
+export default function CreateEvent(props) {
 
     const [formVal, setFormValue] = useState({
         startDate: '',
@@ -238,10 +239,13 @@ function CreateEvent(props) {
         console.log(form)
 
         axios.post('/lessons', form)
-            .then(res => console.log('Lesson created', res))
+            .then(res => {
+                console.log('Lesson created', res);
+                let events = JSON.parse(JSON.stringify(props.data));
+                events.push(res.data);
+                props.submit(events);
+            })
             .catch(err => console.log(err.data))
-
-        
     }
 
     const useStyles = makeStyles((theme) => ({
@@ -258,6 +262,7 @@ function CreateEvent(props) {
 
     return ( // Get all the data that we need from the user
         <Card style={{ width: '50%', padding: '2% 3%', margin: 'auto', justifyContent: 'center' }} className="flex flex-grow">
+            <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
             <header className="heading modal-heading">Create New Event</header>
             <form className="event-form" onSubmit={submitEventRequest}>
                 <div className="flex flex-grow" style={{justifyContent: 'space-between'}}>
@@ -332,5 +337,3 @@ function CreateEvent(props) {
         </Card>
     )
 }
-
-export default CreateEvent;
