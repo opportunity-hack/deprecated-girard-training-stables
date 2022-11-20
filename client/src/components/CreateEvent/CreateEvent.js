@@ -23,12 +23,12 @@ function CreateEvent(props) {
         endDate: '',
         recurring: false,
         interval: '',
+        start: '',
+        end: '',
         startTime: '',
+        //startTimeMinute: '',
         endTime: '',
-        startTimeHr: '',
-        startTimeMinute: '',
-        endTimeHour: '',
-        endTimeMinute: '',
+        //endTimeMinute: '',
         positions: [],
         lessonAssistantReq: false,
         horseLeaderReq: false,
@@ -40,7 +40,8 @@ function CreateEvent(props) {
         barnCrewCount: '',
         pastureCrewCount: '',
         sidewalkerCount: '',
-        instructor: ''
+        instructor: '',
+        title:''
     });
 
     const [instructors, setInstructors] = useState({});
@@ -50,6 +51,7 @@ function CreateEvent(props) {
 
     useEffect(() => {
         //call user api to get users
+        /*
         allUsers = authenticate('users');
         //allUsers = res.data;
         console.log("RESULT: ", allUsers);
@@ -60,8 +62,8 @@ function CreateEvent(props) {
         console.log("map: ", map);
         setInstructors(map);
         setInstructorsArr(Array.from(map.keys()));
-
-        /*axios.get('/users')
+	*/
+        axios.get('/users')
         .then(res => {
             console.log('users recieved');
             allUsers = res.data;
@@ -75,7 +77,7 @@ function CreateEvent(props) {
             setInstructorsArr(Array.from(map.keys()));
         })
         .catch(err => console.log(err.data));
-        */
+        
 
         //console.log("All Users: ", allUsers);
 
@@ -110,8 +112,8 @@ function CreateEvent(props) {
         console.log('form: ', formVal.instructor);
         console.log('form inst: ', instructors.get(instructorsArr[formVal.instructor]));
         let fD = {};    // The event that we will submit - starts empty
-        let startDate = new Date(formVal.startDate);
-        let endDate = new Date(formVal.endDate);
+        // let startDate = new Date(formVal.startDate);
+        // let endDate = new Date(formVal.endDate);
         fD.instructor = instructors.get(instructorsArr[formVal.instructor]);
         fD.volunteers = { // Initialize all the values that we will get from the user as empty to begin.
             "barn crew": {
@@ -137,6 +139,7 @@ function CreateEvent(props) {
         };
         fD.horses = [];
         fD.notes = '';
+        // fD.title = formVal.title;
         // fD.bookedDates = [];
 
         // fD.bookedDates.push(new Date(formVal.startDate));
@@ -179,20 +182,61 @@ function CreateEvent(props) {
         // .catch((error) => {
         //     console.error('Error: error');
         // });
+        //let start = formVal.startDate + formVal.startTime;
+        //let end = formVal.endData + formVal.endTime;
+        // new Date(year, monthIndex, day, hours, minutes)
+
+        let startYear = formVal.startDate.substring(0,4);
+        let startMonth = parseInt(formVal.startDate.substring(5,7)) - 1;
+        let startDay = formVal.startDate.substring(8);
+        let startHour = formVal.startTime.substring(0,2);
+        let startMinute = formVal.startTime.substring(3);
+
+        let startDate = new Date(startYear, startMonth, startDay, startHour, startMinute);
+
+        let endYear = formVal.endDate.substring(0,4);
+        let endMonth = parseInt(formVal.endDate.substring(5,7)) - 1;
+        let endDay = formVal.endDate.substring(8);
+        let endHour = formVal.endTime.substring(0,2);
+        let endMinute = formVal.endTime.substring(3);
+
+        let endDate = new Date(endYear, endMonth, endDay, endHour, endMinute);
+
+        // console.log("startD:", formVal.startDate);
+        // console.log("endD:", formVal.endDate);
+        // console.log("startT:", formVal.startTime);
+        // console.log("endT:", formVal.endTime);
+
+        // let startD = new Date(formVal.startDate);
+        // let endD = new Date(formVal.endDate);
+
+        // startD.setHours(formVal.startTime.substring(0,2));
+        // startD.setMinutes(formVal.startTime.substring(3,));
+        // endD.setHours(endT.getHours);
+        // endD.setMinutes(endT.getMinutes);
+
+        // console.log("startD:",startD);
+        // console.log("endD:",endD);
+
+        // let start = startD+startT;
+        // let end = endD+endT;
+        // let start = Date.parse(formVal.startDate + formVal.startTime);
+        // let end = Date.parse(formVal.endDate + formVal.endTime);
 
         const form = {
-            startTime: formVal.startDate,
-            endTime: formVal.endDate,
+            start: startDate,
+            end: endDate,
             instructor: fD.instructor,
             volunteers: fD.volunteers,
             horses: null,
-            notes: ''
+            notes: '',
+            title: formVal.title
         }
 
         console.log(form)
 
         axios.post('/lessons', form)
-            .then(res => console.log('Lesson created'))
+            .then(res => console.log('Lesson created', res))
             .catch(err => console.log(err.data))
 
         
@@ -214,6 +258,9 @@ function CreateEvent(props) {
         <Card style={{ width: '50%', padding: '2% 3%', margin: 'auto', justifyContent: 'center' }} className="flex flex-grow">
             <header className="heading modal-heading">Create New Event</header>
             <form className="event-form" onSubmit={submitEventRequest}>
+                <div className="flex flex-grow" style={{justifyContent: 'space-between'}}>
+                    <Input style={{ width: '100%', margin: "20px" }} name="title" onChange={handleChange} value={formVal.title} type="text" placeholder="Title" />
+                </div>
                 <div className="flex flex-grow" style={{ justifyContent: 'space-between' }}>
                     <DatePicker id="startDate" name="startDate" label="Start Date" handleDate={handleChange} value={formVal.startDate} />
                     <DatePicker id="endDate" name="endDate" label="End Date" disabled={!formVal.recurring} handleDate={handleChange} value={formVal.endDate} />

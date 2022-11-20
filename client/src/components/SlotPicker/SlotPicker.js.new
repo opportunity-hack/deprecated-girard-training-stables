@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+//import { makeStyles } from '@material-ui/core/styles';
 import './SlotPicker.css';
-import mockData from '../../mock/mock';
+//import mockData from '../../mock/mock';
 import Card from '../Card/Card';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+// import Input from '@material-ui/core/Input';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import FormControl from '@material-ui/core/FormControl';
+// import Select from '@material-ui/core/Select';
+// import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+// import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import SimpleModal from '../Modal/Modal';
 import CustomAccordion from '../Accordion/Accordion';
@@ -28,75 +28,84 @@ import axios from 'axios';
 
 
 function SlotPicker(props) {
-    const [state, setState] = useState([]);
-    const [positionFilter, setPositionFilter] = useState('');
-    const [dayOfWeek, setDayOfWeek] = useState('');
+    //const [state, setState] = useState([]);
+    //const [positionFilter, setPositionFilter] = useState('');
     const [open, setOpen] = React.useState(false);
     const [body, setBody] = React.useState('');
     const history = useHistory();
-    const [events, setEvents] = React.useState([{}]);
+    const [events, setEvents] = React.useState({});
 
    //Array to display the day header
     const displaydays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     //Create the arrays for
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'All'];
+    //const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'All'];
     //Array for display of months and calculation of data
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    //const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 
     //Gets the data of today to set the starting area
-    let today = new Date();
-    const [currentMonth, setMonth] = useState(today.getMonth()); // months are zero-indexed; so this function would return 10 for November instead of 11
-    const [currentYear, setYear] = useState(today.getFullYear());
+    //let today = new Date();
+    //const [currentMonth, setMonth] = useState(today.getMonth()); // months are zero-indexed; so this function would return 10 for November instead of 11
+    //const [currentYear, setYear] = useState(today.getFullYear());
 
 
     useEffect(() => {
+        console.log("at start of useEffect");
+        setEvents(oldEvents);
+        /*
         async function fetchData() {
             let result = await getData();
-            console.log("result:", result);
-            //setEvents(result);
+            setEvents(result);
         }
         fetchData();
-        // let dayOfWeek = 3;
-        // let emptySlots = new Array(dayOfWeek);
+        */
     }, []);
-    
-        
-    //     async function fetchData(month, year) {
-    //         let res = await getData(month, year);
-    //         let dayOfWeek = new Date(res.data[0].date).getDay();
-    //         let emptySlots = new Array(dayOfWeek);
-    //         setState({
-    //             ...state,
-    //             lessonData: [...emptySlots, ...res.data],
-    //             originalData: [...emptySlots, ...res.data]
-    //         });
-    //     }
-    //     fetchData(currentMonth + 1, currentYear);
-        
-    // }, [currentMonth, currentYear]);
-    
 
+        
+        /*axios.get('/lessons')
+            .then(response => {
+                console.log("response:", response.data);
+                setEvents(oldEvents);
+            })
+            .catch(error => {
+                console.log(error);
+                setEvents(oldEvents);
+            })
 
-    //Gets data from data !!!!CURRENTLY USING MOCK DATA!!!
+        /*let dayOfWeek = new Date(res.data[0].date).getDay();
+        let emptySlots = new Array(dayOfWeek);
+        setState({
+            ...state,
+            lessonData: [...emptySlots, ...res.data],
+            originalData: [...emptySlots, ...res.data]
+        });
+        
+    }, []);
+    */
+
     let getData = async () => {
-        // fetch(URL).then(res => resolve(res));
-        //let result = "";
         axios.get('/lessons')
             .then(response => {
                 console.log("response:", response.data);
-                setEvents(response.data);
-                //return response.data;
+                return response.data;
             })
             .catch(error => {
-                console.log("error:", error);
-                setEvents(oldEvents);
-                //return oldEvents;
+                console.log(error);
+                return oldEvents;
             })
-        //console.log('hi', mockData);
+    };
+    //}, [currentMonth, currentYear]);
+
+/*
+    //Gets data from data !!!!CURRENTLY USING MOCK DATA!!!
+    let getData = async () => {
+        // fetch(URL).then(res => resolve(res));
+        
+        console.log('hi');
         //return mockData;
     };
-
+*/
+    /*
     //Apply the position search by using filter
     const searchByPosition = (e) => {
         setPositionFilter(e.target.value);
@@ -110,8 +119,8 @@ function SlotPicker(props) {
         console.log('Searching by day', e.target.value, dayOfWeek);
         filter(positionFilter, e.target.value);
     }
-
-
+    */
+    /*
     //Uses position and day to narrow down searches. day 7 == all
     const filter = (position, day) => {
         position = position.toString().toLowerCase();
@@ -153,7 +162,8 @@ function SlotPicker(props) {
             lessonData: temp
         });
     }
-
+    */
+   /*
     const useStyles = makeStyles((theme) => ({
         formControl: {
           margin: theme.spacing(1),
@@ -161,9 +171,10 @@ function SlotPicker(props) {
           height: '4rem'
         }
     }));
+*/
+    //const classes = useStyles();
 
-    const classes = useStyles();
-
+    /*
     const changeMonth = (type) => {
         let month;
         switch(type) {
@@ -186,6 +197,7 @@ function SlotPicker(props) {
 
         }
     };
+    */
 
     const openModal = () => {
         setOpen(true);
@@ -195,6 +207,7 @@ function SlotPicker(props) {
         console.log('Signing up for time slot', data);
     }
 
+    /*
     const viewSlotDetails = (data) => {
         console.log('Viewing slot details', data);
         
@@ -204,7 +217,7 @@ function SlotPicker(props) {
 
         openModal();
     }
-
+    */
 
     //Shows the legend when the info button is clicked
     const showInfo = () => {
