@@ -85,13 +85,16 @@ function SlotPicker(props) {
         axios.get('/lessons')
             .then(response => {
                 console.log("response:", response);
-                setEvents(response.data);
-                //return response.data;
+                let newEvents = response.data;
+                for (let i = 0; i < newEvents.length; i++) {
+                    newEvents[i].start = new Date(newEvents[i].start);
+                    newEvents[i].end = new Date(newEvents[i].end);
+                }
+                setEvents(newEvents);
             })
             .catch(error => {
                 console.log("error:", error);
                 setEvents(oldEvents);
-                //return oldEvents;
             })
         //console.log('hi', mockData);
         //return mockData;
