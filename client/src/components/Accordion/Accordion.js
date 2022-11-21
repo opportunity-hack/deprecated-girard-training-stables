@@ -58,6 +58,7 @@ const AccordionDetails = withStyles((theme) => ({
 export default function CustomAccordion(props) {
 const [expanded, setExpanded] = React.useState('');
 const [subExpanded, setSubExpanded] = React.useState('');
+const [UserID, setUserID] = React.useState('');
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -73,6 +74,38 @@ const [subExpanded, setSubExpanded] = React.useState('');
   }
 
   let data = props.data;
+
+  if(isAuthenticated)
+  {
+    var safeEmail = user.email;
+  }
+  else
+  {
+    var safeEmail = "BAD@gmail.com"
+  }
+  console.log("Email for Register:", safeEmail);
+  axios.get('/users', { params: { email: safeEmail } } )
+  .then(res => {
+    //Check for the users id in the signed up users
+    setUserID(res.data._id);
+  })
+  .catch(err => console.log("Error-Checking-Registered: ", err.data));
+
+  
+
+  const CheckForRegister = (data, position) => {
+    let newLesson = data;
+    let UserIndex = newLesson.volunteers[position].signedUp.indexOf(UserID);
+    if(UserIndex == -1)
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+
+  }
 
   const handleSignUpForEvent = (data, position) => {
     //TODO: SIGN UP FLow
@@ -113,6 +146,58 @@ const [subExpanded, setSubExpanded] = React.useState('');
       .catch(err => console.log("Error-Register_for_event: ", err.data));
   }
 
+  const handleUnRegisterForEvent = (data, position) => {
+    console.log("Accordion handleUnRegisterForEvent");
+    console.log("data:", data);
+    console.log("position:", position);
+
+    console.log("volunteers in position:",data.volunteers[position]);
+
+
+    if(isAuthenticated)
+    {
+      var safeEmail = user.email;
+    }
+    else
+    {
+      var safeEmail = "BAD@gmail.com"
+    }
+    //Check if a user with the email exists
+    console.log('Email checked: ', safeEmail);
+
+    axios.get('/users', { params: { email: safeEmail } } )
+      .then(res => {
+        console.log('User Returned:',res.data);
+        console.log('user ID:', res.data._id);
+        
+        let newLesson = data;
+
+        //Get the index of the user Unregistering
+        let UserIndex = newLesson.volunteers[position].signedUp.indexOf(res.data._id);
+        console.log("Index to be removed:", UserIndex);
+
+        if(UserIndex != -1)
+        {
+          //Remove user from array
+          newLesson.volunteers[position].signedUp.splice(UserIndex,1)
+        }
+        else
+        {
+          //Log error
+          console.log("Error: User not found to Remove");
+        }
+
+        console.log("Lesson after user was removed:", newLesson);
+
+        let urlExtension = '/lessons/'+newLesson._id;
+        axios.put(urlExtension, newLesson)
+          .then(result => console.log("put new lesson result:", result))
+          .catch(error => console.log("put new lesson error:", error))
+        
+      })
+      .catch(err => console.log("Error-Register_for_event: ", err.data));
+  }
+
   return (
         <div>
             <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
@@ -131,7 +216,8 @@ const [subExpanded, setSubExpanded] = React.useState('');
                                     <AccordionSummary id={`subpanel-${index}-header`} >
                                       <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
                                           <div>{data.volunteers[pos].signedUp.length} of {data.volunteers[pos].minVolunteers} filled</div>
-                                          {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 ? <Button variant="contained" color="primary" onClick={() => handleSignUpForEvent(data, pos)}>Sign up</Button> : <></>}
+                                          {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 && !CheckForRegister(data, pos) ? <Button variant="contained" color="primary" onClick={() => handleSignUpForEvent(data, pos)}>Sign up</Button> : <></>}
+                                          {CheckForRegister(data, pos) ? <Button variant="contained" color="primary" onClick={() => handleUnRegisterForEvent(data, pos)}>Unregister</Button> : <></>}
                                       </div>
                                     </AccordionSummary>
                                 </Accordion>
