@@ -59,6 +59,7 @@ export default function CustomAccordion(props) {
 const [expanded, setExpanded] = React.useState('');
 const [subExpanded, setSubExpanded] = React.useState('');
 const [UserID, setUserID] = React.useState('');
+const [AdvancedAccess, setAccess] = React.useState(false);
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -88,6 +89,12 @@ const [UserID, setUserID] = React.useState('');
   .then(res => {
     //Check for the users id in the signed up users
     setUserID(res.data._id);
+
+    //Check if user is an admin
+    if(res.data.userType == 'volunteer coordinator')
+    {
+      setAccess(true);
+    }
   })
   .catch(err => console.log("Error-Checking-Registered: ", err.data));
 
@@ -106,6 +113,16 @@ const [UserID, setUserID] = React.useState('');
     }
 
   }
+
+
+  const DeleteEvent = (data) => {
+    let urlExtension = '/lessons/'+data._id;
+    axios.delete(urlExtension)
+      .then(result => console.log("delete lesson result:", result))
+      .catch(error => console.log("delete lesson error:", error))
+
+  }
+
 
   const handleSignUpForEvent = (data, position) => {
     //TODO: SIGN UP FLow
@@ -203,7 +220,7 @@ const [UserID, setUserID] = React.useState('');
   return (
         <div>
             <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
-            <div className="modal-heading">{data.title}- {data.start.toDateString()}</div>
+            <div className="modal-heading">{data.title} - {data.start.toDateString()}</div>
             {
               data && Object.keys(data.volunteers).map((pos, index) => {
                 return (
@@ -230,6 +247,10 @@ const [UserID, setUserID] = React.useState('');
                 )
               })
             }
+
+            {AdvancedAccess ? <div>
+              <Button style={{left: "45%", bottom: "-2em", backgroundColor: "#f44336"}} variant="contained" onClick={() => DeleteEvent(data)}>Delete Lesson</Button>
+            </div> : <></>}
         </div>
   );
 }
