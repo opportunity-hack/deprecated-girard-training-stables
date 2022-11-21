@@ -65,13 +65,13 @@ html {
 .create-event {
     position: fixed;
     bottom: 1rem;
-    right: 3rem;
+    right: 8rem;
 }
 
 .show-info{
     position: fixed;
     bottom: 1rem;
-    right: 8rem;
+    right: 3rem;
 }
 
 .MuiSvgIcon-fontSizeLarge {
