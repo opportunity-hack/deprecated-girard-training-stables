@@ -120,7 +120,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
     axios.delete(urlExtension)
       .then(result => console.log("delete lesson result:", result))
       .catch(error => console.log("delete lesson error:", error))
-
+    props.handleClose();
   }
 
 
