@@ -157,29 +157,37 @@ function Signup() {
        
        if(isAuthenticated) 
        {
+            console.log("user is authenticated");
+
             var experienceUpdated;
-            if(formVal.horseExpYrs = '')
+            if(formVal.horseExpYrs == '')
                 experienceUpdated = 0;
             else
                 experienceUpdated = formVal.horseExpYrs;
 
+            console.log("user experience:", experienceUpdated);
+            console.log("formval.horseExpyrs", formVal.horseExpYrs);
 
             const submitForm = {
-                "firstname": formVal.firstname,
-                "lastname": formVal.lastname,
-                "phone": formVal.phone,
+                "firstName": formVal.firstname,
+                "lastName": formVal.lastname,
+                "phoneNumber": formVal.phone,
                 "email": user.email,
                 "age": Number(formVal.age),
                 "height": Number(formVal.height),
                 "horseExperience": experienceUpdated,
-                "riding": formVal.riding,
-                "tacking": formVal.tacking,
-                "grooming": formVal.grooming,
-                "leading": formVal.leading
+                "horseRiding": formVal.riding,
+                "horseTacking": formVal.tacking,
+                "horseGrooming": formVal.grooming,
+                "horseLeading": formVal.leading,
+                "userType": 'volunteer'
             }
+            
+            console.log("submit form:", submitForm);
+
             axios.post('/users', submitForm)
-            .then(res => {})
-            .catch(err => console.log(err.data))
+                .then(res => console.log("result:",res.data))
+                .catch(err => console.log("error:",err.data))
 
             history.push("/volunteer");
         }

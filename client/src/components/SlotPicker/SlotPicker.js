@@ -117,7 +117,7 @@ function SlotPicker(props) {
     }
 
     const signUp = (data) => {
-        console.log('Signing up for time slot', data);
+        console.log("Signing up for time slot:", data);
     }
 
     //Shows the legend when the info button is clicked
