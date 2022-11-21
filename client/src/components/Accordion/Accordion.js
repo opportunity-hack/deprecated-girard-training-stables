@@ -144,6 +144,7 @@ const [UserID, setUserID] = React.useState('');
         
       })
       .catch(err => console.log("Error-Register_for_event: ", err.data));
+      props.handleClose();
   }
 
   const handleUnRegisterForEvent = (data, position) => {
@@ -196,6 +197,7 @@ const [UserID, setUserID] = React.useState('');
         
       })
       .catch(err => console.log("Error-Register_for_event: ", err.data));
+      props.handleClose();
   }
 
   return (

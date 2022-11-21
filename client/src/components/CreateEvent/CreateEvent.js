@@ -245,7 +245,8 @@ export default function CreateEvent(props) {
                 events.push(res.data);
                 props.submit(events);
             })
-            .catch(err => console.log(err.data))
+            .catch(err => console.log(err.data));
+        props.handleClose();
     }
 
     const useStyles = makeStyles((theme) => ({
