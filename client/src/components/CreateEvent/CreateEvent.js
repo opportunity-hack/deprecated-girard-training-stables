@@ -242,6 +242,8 @@ export default function CreateEvent(props) {
             .then(res => {
                 console.log('Lesson created', res);
                 let events = JSON.parse(JSON.stringify(props.data));
+                res.data.start = new Date(res.data.start);
+                res.data.end = new Date(res.data.end);
                 events.push(res.data);
                 props.submit(events);
             })

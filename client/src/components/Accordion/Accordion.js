@@ -154,8 +154,8 @@ const [AdvancedAccess, setAccess] = React.useState(false);
         newLesson.volunteers[position].signedUp.push(res.data._id);
         console.log(newLesson);
 
-        let urlExtension = '/lessons/'+newLesson._id;
-        axios.put(urlExtension, newLesson)
+        let urlExtension = '/lessons/' + newLesson._id;
+        axios.put(urlExtension, {data : newLesson, email: safeEmail}, { params: {signedUp: true} } )
           .then(result => console.log("put new lesson result:", result))
           .catch(error => console.log("put new lesson error:", error))
         
@@ -206,11 +206,10 @@ const [AdvancedAccess, setAccess] = React.useState(false);
 
         console.log("Lesson after user was removed:", newLesson);
 
-        let urlExtension = '/lessons/'+newLesson._id;
-        axios.put(urlExtension, newLesson)
+        let urlExtension = '/lessons/' + newLesson._id;
+        axios.put(urlExtension, {data : newLesson, email: safeEmail}, { params: {signedUp: false} })
           .then(result => console.log("put new lesson result:", result))
           .catch(error => console.log("put new lesson error:", error))
-        
       })
       .catch(err => console.log("Error-Register_for_event: ", err.data));
   }

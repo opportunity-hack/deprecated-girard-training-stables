@@ -56,8 +56,8 @@ const sendSignUpMail = async (req, res) => {
     .catch((error) => console.error(error));
 };
 
-const sendLessonMail = async (emailBody) => {
-  const { name, userEmail } = emailBody;
+const sendRegisterLessonMail = async (emailBody) => {
+  const { name, userEmail, lessonName } = emailBody;
 
   let response = {
     body: {
@@ -67,11 +67,11 @@ const sendLessonMail = async (emailBody) => {
         data: [
           {
           //TODO:add misc details
-           lesson:"LESSON_NAME"
+           lesson: lessonName
           },
         ],
       },
-      outro: "We booked a lesson.",
+      outro: "We registered you for the lesson.",
     },
   };
 
@@ -80,7 +80,44 @@ const sendLessonMail = async (emailBody) => {
   let message = {
     from: EMAIL,
     to: userEmail,
-    subject: "Signup mail",
+    subject: "You're signed up for a lesson!",
+    html: mail,
+  };
+
+  try {
+    const resp = await transporter.sendMail(message)
+    return { msg: "you should receive an email from us" };
+    
+  } catch (error) {
+    console.error(error)
+  }
+};
+
+const sendUnregisterLessonMail = async (emailBody) => {
+  const { name, userEmail, lessonName } = emailBody;
+
+  let response = {
+    body: {
+      name,
+      intro: "Welcome to the Girard Training Stables ",
+      table: {
+        data: [
+          {
+          //TODO:add misc details
+           lesson: lessonName
+          },
+        ],
+      },
+      outro: "We unregistered you from the lesson.",
+    },
+  };
+
+  let mail = MailGenerator.generate(response);
+
+  let message = {
+    from: EMAIL,
+    to: userEmail,
+    subject: "You're unregistered for a lesson!",
     html: mail,
   };
 
@@ -95,5 +132,6 @@ const sendLessonMail = async (emailBody) => {
 
 module.exports = {
   sendSignUpMail,
-  sendLessonMail,
+  sendRegisterLessonMail,
+  sendUnregisterLessonMail
 };

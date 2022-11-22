@@ -18,6 +18,7 @@ import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import oldEvents from '../../mock/events';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 
 function SlotPicker(props) {
@@ -30,7 +31,29 @@ function SlotPicker(props) {
 
     //Array to display the day header
     const displaydays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    let history = useHistory();
     
+    //Gets data from server
+    let getData = async () => {
+    
+        axios.get('/lessons')
+            .then(response => {
+                console.log("response:", response);
+                let newEvents = response.data;
+                for (let i = 0; i < newEvents.length; i++) {
+                    newEvents[i].start = new Date(newEvents[i].start);
+                    newEvents[i].end = new Date(newEvents[i].end);
+                }
+                setEvents(newEvents);
+            })
+            .catch(error => {
+                console.log("error:", error);
+                setEvents(oldEvents);
+            })
+        
+    };
+
     useEffect(() => {
         async function fetchData() {
             await getData();
@@ -39,16 +62,19 @@ function SlotPicker(props) {
         console.log("result:", events);
     }, []);
 
-    const handleCreateEvent = useCallback(
-        () => {
-            let temp = <CreateEvent data={events} submit={setEvents} handleClose={handleClose}/>
+    // const handleCreateEvent = useCallback(
+    //     () => {
+    //         let temp = <CreateEvent data={events} submit={setEvents} handleClose={handleClose}/>
 
-            setBody(temp);
+    //         setBody(temp);
 
-            openModal();
-        },
-        [events]
-      )
+    //         openModal();
+    //     },
+    //     [events]
+    //   )
+    const handleCreateEvent = () => {
+        history.push('/create');
+    }
 
     const handleSelectEvent = useCallback(
     (event) => {
@@ -60,9 +86,6 @@ function SlotPicker(props) {
     },
     []
   )
-
-
-    
 
     if (isLoading) {
         return <div>Loading ...</div>;
@@ -88,28 +111,6 @@ function SlotPicker(props) {
         }
      })
      .catch(err => console.log("Error-AdminCheck: ", err.data));
-
-
-
-    //Gets data from server
-    let getData = async () => {
-        
-        axios.get('/lessons')
-            .then(response => {
-                console.log("response:", response);
-                let newEvents = response.data;
-                for (let i = 0; i < newEvents.length; i++) {
-                    newEvents[i].start = new Date(newEvents[i].start);
-                    newEvents[i].end = new Date(newEvents[i].end);
-                }
-                setEvents(newEvents);
-            })
-            .catch(error => {
-                console.log("error:", error);
-                setEvents(oldEvents);
-            })
-        
-    };
 
 
     const openModal = () => {
