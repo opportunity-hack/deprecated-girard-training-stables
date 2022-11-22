@@ -120,7 +120,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
     axios.delete(urlExtension)
       .then(result => console.log("delete lesson result:", result))
       .catch(error => console.log("delete lesson error:", error))
-
+    props.handleClose();
   }
 
 
@@ -161,6 +161,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
         
       })
       .catch(err => console.log("Error-Register_for_event: ", err.data));
+      props.handleClose();
   }
 
   const handleUnRegisterForEvent = (data, position) => {
@@ -212,6 +213,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
           .catch(error => console.log("put new lesson error:", error))
       })
       .catch(err => console.log("Error-Register_for_event: ", err.data));
+      props.handleClose();
   }
 
   return (
