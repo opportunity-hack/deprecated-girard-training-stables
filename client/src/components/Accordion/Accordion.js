@@ -85,7 +85,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
     var safeEmail = "BAD@gmail.com"
   }
   console.log("Email for Register:", safeEmail);
-  axios.get('/users', { params: { email: safeEmail } } )
+  axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
   .then(res => {
     //Check for the users id in the signed up users
     setUserID(res.data._id);
@@ -145,7 +145,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
     //Check if a user with the email exists
     console.log('Email checked: ', safeEmail);
 
-    axios.get('/users', { params: { email: safeEmail } } )
+    axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
       .then(res => {
         console.log('User Returned:',res.data);
         console.log('user ID:', res.data._id);
@@ -183,7 +183,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
     //Check if a user with the email exists
     console.log('Email checked: ', safeEmail);
 
-    axios.get('/users', { params: { email: safeEmail } } )
+    axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
       .then(res => {
         console.log('User Returned:',res.data);
         console.log('user ID:', res.data._id);

@@ -93,7 +93,7 @@ function Signup() {
       }
 
 
-    if(counter == 0)
+    if(counter === 0)
     {
         if(isAuthenticated)
          {
@@ -105,7 +105,7 @@ function Signup() {
         }
         //Check if a user with the email exists
         console.log('Email checked: ', safeEmail);
-        axios.get('/users', { params: { email: safeEmail } } )
+        axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
         .then(res => {
             console.log('Signup-check',res.data)
             if (res.data != null)
@@ -155,12 +155,14 @@ function Signup() {
         */
         // event.preventDefault();
        
+        console.log("Authenticated?",isAuthenticated);
+
        if(isAuthenticated) 
        {
             console.log("user is authenticated");
 
             var experienceUpdated;
-            if(formVal.horseExpYrs == '')
+            if(formVal.horseExpYrs === '')
                 experienceUpdated = 0;
             else
                 experienceUpdated = formVal.horseExpYrs;
@@ -185,7 +187,7 @@ function Signup() {
             
             console.log("submit form:", submitForm);
 
-            axios.post('/users', submitForm)
+           axios.post('http://localhost:2222/users', submitForm)
                 .then(res => console.log("result:",res.data))
                 .catch(err => console.log("error:",err.data))
 

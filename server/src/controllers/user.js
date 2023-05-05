@@ -19,10 +19,13 @@ module.exports.getUsers = asyncHandler(async function(req, res) {
 
 module.exports.createUser = asyncHandler(async function(req, res) {
   console.log("starting to create user");
-  //console.log("req:", req);
+
   console.log("req.body:", req.body);
-    const response = await User.create(req.body);
-    res.status(201).json(response);
+  
+  const response = await User.create(req.body);
+
+  res.status(201).json(response);
+
   console.log("finished creating user");
 });
 

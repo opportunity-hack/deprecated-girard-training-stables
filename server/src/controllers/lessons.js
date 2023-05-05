@@ -6,6 +6,9 @@ const asyncHandler = require('express-async-handler');
 
 module.exports.createLesson = asyncHandler(async function(req, res) {
     console.log("started creating lesson");
+    // log body
+    console.log("req.body:", req.body);
+    
     const response = await Lesson.create({
       start: req.body.start,
       end: req.body.end,

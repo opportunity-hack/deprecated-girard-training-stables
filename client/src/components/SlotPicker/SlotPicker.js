@@ -37,7 +37,7 @@ function SlotPicker(props) {
     //Gets data from server
     let getData = async () => {
     
-        axios.get('/lessons')
+        axios.get('http://localhost:2222/lessons')
             .then(response => {
                 console.log("response:", response);
                 let newEvents = response.data;
@@ -101,7 +101,7 @@ function SlotPicker(props) {
      }
      //Check if a user with the email exists
      console.log('Email checked: ', safeEmail);
-     axios.get('/users', { params: { email: safeEmail } } )
+    axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
      .then(res => {
         console.log('User Returned:',res.data);
         console.log('User Type:',res.data.userType);

@@ -65,12 +65,12 @@ export default function CreateEvent(props) {
         setInstructors(map);
         setInstructorsArr(Array.from(map.keys()));
 	*/
-        axios.get('/users')
+        axios.get('http://localhost:2222/users')
         .then(res => {
             console.log('users recieved');
             allUsers = res.data;
             console.log("RESULT: ", res.data);
-            var allUsers = res.data.filter(user => user.userType == "volunteer");
+            var allUsers = res.data.filter(user => user.userType === "volunteer");
             var map = new Map(res.data.map(obj => {
                 return [obj.firstName, obj];
             }));
@@ -238,7 +238,7 @@ export default function CreateEvent(props) {
 
         console.log(form)
 
-        axios.post('/lessons', form)
+        axios.post('http://localhost:2222/lessons', form)
             .then(res => {
                 console.log('Lesson created', res);
                 let events = JSON.parse(JSON.stringify(props.data));

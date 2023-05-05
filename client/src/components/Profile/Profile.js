@@ -12,15 +12,7 @@ const Profile = () => {
     return <div>Loading ...</div>;
   }
 
-
-
-      /*
-    axios.get('/users', { params: { email: user.email } } )
-    .then(res => {
-       
-    })
-    .catch(err => console.log(err.data));
-    */
+  
 return (
   isAuthenticated && (
     <div>
