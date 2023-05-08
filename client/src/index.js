@@ -21,8 +21,10 @@ const theme = createMuiTheme({
 
 ReactDOM.render(
   <Auth0Provider
-    domain="dev-6ir-6qcd.us.auth0.com"
-    clientId="YaKtx23CDf33oUGDlVte9TpLpvT5u2oM"
+    // old from capstone: domain="dev-6ir-6qcd.us.auth0.com"
+    domain="dev-5wed6txz.us.auth0.com"
+    // old from capstone: clientId="YaKtx23CDf33oUGDlVte9TpLpvT5u2oM"
+    clientId="OX5s43OqvwG8cw5URn7y4KJyC8JhP7Pd"
     //redirectUri="https://girard-client.herokuapp.com/signup"
     redirectUri="http://localhost:3000/signup"
   >

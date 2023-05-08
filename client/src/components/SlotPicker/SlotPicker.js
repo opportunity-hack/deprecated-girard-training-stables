@@ -34,6 +34,18 @@ function SlotPicker(props) {
 
     let history = useHistory();
     
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const openModal = () => {
+        setOpen(true);
+    }
+
+    const signUp = (data) => {
+        console.log("Signing up for time slot:", data);
+    }
+
     //Gets data from server
     let getData = async () => {
     
@@ -113,13 +125,7 @@ function SlotPicker(props) {
      .catch(err => console.log("Error-AdminCheck: ", err.data));
 
 
-    const openModal = () => {
-        setOpen(true);
-    }
-
-    const signUp = (data) => {
-        console.log("Signing up for time slot:", data);
-    }
+   
 
     //Shows the legend when the info button is clicked
     const showInfo = () => {
@@ -135,9 +141,7 @@ function SlotPicker(props) {
         openModal();
     }
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+   
 
 
 
