@@ -1,11 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from "@auth0/auth0-react";
 import { ThemeProvider, StyledEngineProvider, createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createRoot } from 'react-dom/client';
+const container = document.getElementById('root');
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+
 
 const theme = createTheme(adaptV4Theme({
   palette: {
@@ -19,7 +22,7 @@ const theme = createTheme(adaptV4Theme({
 }));
 
 
-ReactDOM.render(
+root.render(
   <Auth0Provider
     // old from capstone: domain="dev-6ir-6qcd.us.auth0.com"
     domain="dev-5wed6txz.us.auth0.com"

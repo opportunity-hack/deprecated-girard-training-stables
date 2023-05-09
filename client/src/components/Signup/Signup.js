@@ -1,10 +1,10 @@
 
 import './Signup.css';
+import { styled } from '@mui/material/styles';
 import Card from '../Card/Card.js';
 import Button from '@mui/material/Button'
 import React from 'react';
 import PropTypes from 'prop-types';
-import makeStyles from '@mui/styles/makeStyles';
 import Input from '@mui/material/Input';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -15,27 +15,45 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Error from '../Error/Error';
 import axios from 'axios';
-import {useHistory} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Auth0Context, useAuth0 } from "@auth0/auth0-react";
+
+
+const PREFIX = 'Signup';
+
+const classes = {
+    root: `${PREFIX}-root`
+};
+
+const Root = styled('div')((
+    {
+        theme
+    }
+) => ({
+    [`& .${classes.root}`]: {
+      flexGrow: 1,
+      backgroundColor: theme.palette.background.paper,
+    }
+}));
 
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={2}>
-          {/* <Typography>{children}</Typography> */}
-          {children}
-        </Box>
-      )}
-    </div>
+      <Root
+        role="tabpanel"
+        hidden={value !== index}
+        id={`tabpanel-${index}`}
+        aria-labelledby={`tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={2}>
+            {/* <Typography>{children}</Typography> */}
+            {children}
+          </Box>
+        )}
+      </Root>
   );
 }
 
@@ -52,21 +70,14 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
-
 //variable to ensure that axios only checks once
 var counter = 0;
 
 function Signup() {
     //Pull in auth 0
     const { user, isAuthenticated, isLoading } = useAuth0();
-    let history = useHistory ();
-    const classes = useStyles();
+    let navigate = useNavigate ();
+
     const [value, setValue] = React.useState(0);
 
 
@@ -110,7 +121,7 @@ function Signup() {
             console.log('Signup-check',res.data)
             if (res.data != null)
             {
-                history.push("/volunteer");
+                navigate("/volunteer");
             }
         })
         .catch(err => console.log(err.data));
@@ -191,7 +202,7 @@ function Signup() {
                 .then(res => console.log("result:",res.data))
                 .catch(err => console.log("error:",err.data))
 
-            history.push("/volunteer");
+            navigate("/volunteer");
         }
     }
 
@@ -280,6 +291,6 @@ function Signup() {
             </div>
         </div> )
     ); 
-} 
+}
 
 export default Signup;

@@ -1,5 +1,5 @@
 import React from 'react';
-import withStyles from '@mui/styles/withStyles';
+import { styled } from '@mui/material/styles';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
@@ -14,8 +14,23 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
 
-const Accordion = withStyles({
-  root: {
+const PREFIX = 'Accordion';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  expanded: `${PREFIX}-expanded`,
+  root2: `${PREFIX}-root2`,
+  content: `${PREFIX}-content`,
+  expanded2: `${PREFIX}-expanded2`,
+  root3: `${PREFIX}-root3`
+};
+
+const Root = styled('div')((
+  {
+    theme
+  }
+) => ({
+  [`& .${classes.root}`]: {
     border: '1px solid rgba(0, 0, 0, .125)',
     boxShadow: 'none',
     '&:not(:last-child)': {
@@ -27,11 +42,10 @@ const Accordion = withStyles({
     '&$expanded': {
     },
   },
-  expanded: {},
-})(MuiAccordion);
 
-const AccordionSummary = withStyles({
-  root: {
+  [`& .${classes.expanded}`]: {},
+
+  [`& .${classes.root2}`]: {
     backgroundColor: 'white',
     boxShadow: '2px 4px 8px #ababab',
     marginBottom: -1,
@@ -40,23 +54,30 @@ const AccordionSummary = withStyles({
       minHeight: 56,
     },
   },
-  content: {
+
+  [`& .${classes.content}`]: {
     '&$expanded': {
       margin: '12px 0',
     },
   },
-  expanded: {},
-})(MuiAccordionSummary);
 
-const AccordionDetails = withStyles((theme) => ({
-  root: {
+  [`& .${classes.expanded2}`]: {},
+
+  [`& .${classes.root3}`]: {
 
       display: 'flex',
       flexDirection: 'column',
       flexWrap: 'wrap',
     padding: theme.spacing(2),
   }
-}))(MuiAccordionDetails);
+}));
+
+
+const Accordion = MuiAccordion;
+
+const AccordionSummary = MuiAccordionSummary;
+
+const AccordionDetails = MuiAccordionDetails;
 
 export default function CustomAccordion(props) {
 const [expanded, setExpanded] = React.useState('');
@@ -83,7 +104,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
 
 
   if (isLoading) {
-    return <div>Loading ...</div>;
+    return <Root>Loading ...</Root>;
   }
 
   let data = props.data;
@@ -232,46 +253,78 @@ const [AdvancedAccess, setAccess] = React.useState(false);
   }
 
   return (
-        <div>
-            <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
-            <div className="modal-heading">{data.title} - {data.start.toDateString()}</div>
-            {
-              data && Object.keys(data.volunteers).map((pos, index) => {
-                return (
-                    <div key={v4()}>
-                      {data.volunteers[pos].minVolunteers >= 1 ?
-                        <Accordion key={v4()} square expanded={expanded === `panel-${index}`} onChange={handleChange(`panel-${index}`)}>
-                            <AccordionSummary aria-controls="panel1d-content" id={`panel1d-header-${index}`}>
-                            <Stack direction="column" spacing={1}>
-                              <Stack direction="row" spacing={1}>
-                                <Chip label={data.volunteers[pos].signedUp.length === data.volunteers[pos].minVolunteers ? "Full" : "Open"} />                            
-                                  <Typography>{pos}</Typography>
-                                  <Chip label={`${data.volunteers[pos].signedUp.length} of ${data.volunteers[pos].minVolunteers} filled`} />                                                                                          
-                              </Stack>
-                            <Typography className="muted">{volunteerDescriptions[pos]}</Typography>
-                            </Stack>
-                            </AccordionSummary>
-                            <AccordionDetails >
-                                <Accordion key={v4()} square expanded={subExpanded === `subpanel-${pos}-${index}`} onChange={handleSubChange(`subpanel-${pos}-${index}`)}>
-                                    <AccordionSummary id={`subpanel-${index}-header`} >
-                                      <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
-                                          <div>{data.volunteers[pos].signedUp.length} of {data.volunteers[pos].minVolunteers} filled</div>
-                                          {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 && !CheckForRegister(data, pos) ? <Button variant="contained" color="primary" onClick={() => handleSignUpForEvent(data, pos)}>Sign up</Button> : <></>}
-                                          {CheckForRegister(data, pos) ? <Button variant="contained" color="primary" onClick={() => handleUnRegisterForEvent(data, pos)}>Unregister</Button> : <></>}
-                                      </div>
-                                    </AccordionSummary>
-                                </Accordion>
-                            </AccordionDetails>
-                        </Accordion>
-                      : <></>}
-                    </div>
-                )
-              })
-            }
+    <div>
+        <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
+        <div className="modal-heading">{data.title} - {data.start.toDateString()}</div>
+        {
+          data && Object.keys(data.volunteers).map((pos, index) => {
+            return (
+              <div key={v4()}>
+                {data.volunteers[pos].minVolunteers >= 1 ?
+                  <Accordion
+                    key={v4()}
+                    square
+                    expanded={expanded === `panel-${index}`}
+                    onChange={handleChange(`panel-${index}`)}
+                    classes={{
+                      root: classes.root,
+                      expanded: classes.expanded
+                    }}>
+                      <AccordionSummary
+                        aria-controls="panel1d-content"
+                        id={`panel1d-header-${index}`}
+                        classes={{
+                          root: classes.root2,
+                          content: classes.content,
+                          expanded: classes.expanded2
+                        }}>
+                      <Stack direction="column" spacing={1}>
+                        <Stack direction="row" spacing={1}>
+                          <Chip label={data.volunteers[pos].signedUp.length === data.volunteers[pos].minVolunteers ? "Full" : "Open"} />                            
+                            <Typography>{pos}</Typography>
+                            <Chip label={`${data.volunteers[pos].signedUp.length} of ${data.volunteers[pos].minVolunteers} filled`} />                                                                                          
+                        </Stack>
+                      <Typography className="muted">{volunteerDescriptions[pos]}</Typography>
+                      </Stack>
+                      </AccordionSummary>
+                      <AccordionDetails
+                        classes={{
+                          root: classes.root3
+                        }}>
+                          <Accordion
+                            key={v4()}
+                            square
+                            expanded={subExpanded === `subpanel-${pos}-${index}`}
+                            onChange={handleSubChange(`subpanel-${pos}-${index}`)}
+                            classes={{
+                              root: classes.root,
+                              expanded: classes.expanded
+                            }}>
+                              <AccordionSummary
+                                id={`subpanel-${index}-header`}
+                                classes={{
+                                  root: classes.root2,
+                                  content: classes.content,
+                                  expanded: classes.expanded2
+                                }}>
+                                <div style={{ display: 'flex', flex: '1 1 auto', justifyContent: 'space-between', alignItems: 'center', verticalAlign:'center', height: '1rem'}}>
+                                    <div>{data.volunteers[pos].signedUp.length} of {data.volunteers[pos].minVolunteers} filled</div>
+                                    {data.volunteers[pos].minVolunteers - data.volunteers[pos].signedUp.length !== 0 && !CheckForRegister(data, pos) ? <Button variant="contained" color="primary" onClick={() => handleSignUpForEvent(data, pos)}>Sign up</Button> : <></>}
+                                    {CheckForRegister(data, pos) ? <Button variant="contained" color="primary" onClick={() => handleUnRegisterForEvent(data, pos)}>Unregister</Button> : <></>}
+                                </div>
+                              </AccordionSummary>
+                          </Accordion>
+                      </AccordionDetails>
+                  </Accordion>
+                : <></>}
+              </div>
+            );
+          })
+        }
 
-            {AdvancedAccess ? <div>
-              <Button style={{left: "45%", bottom: "-2em", backgroundColor: "#f44336"}} variant="contained" onClick={() => DeleteEvent(data)}>Delete Lesson</Button>
-            </div> : <></>}
-        </div>
+        {AdvancedAccess ? <div>
+          <Button style={{left: "45%", bottom: "-2em", backgroundColor: "#f44336"}} variant="contained" onClick={() => DeleteEvent(data)}>Delete Lesson</Button>
+        </div> : <></>}
+    </div>
   );
 }

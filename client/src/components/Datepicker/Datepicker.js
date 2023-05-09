@@ -1,25 +1,37 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
+const PREFIX = 'Datepicker';
+
+const classes = {
+  container: `${PREFIX}-container`,
+  textField: `${PREFIX}-textField`
+};
+
+const Root = styled('form')((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.container}`]: {
     display: 'flex',
     flexWrap: 'wrap',
     flex: 1
   },
-  textField: {
+
+  [`& .${classes.textField}`]: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: '100%'
-  },
+  }
 }));
 
 export default function DatePicker(props) {
-  const classes = useStyles();
+
 
   return (
-    <form className={classes.container} noValidate>
+    <Root className={classes.container} noValidate>
       <TextField
         id={props.id}
         label={props.label}
@@ -31,6 +43,6 @@ export default function DatePicker(props) {
         }}
         onChange={props.handleDate}
       />
-    </form>
+    </Root>
   );
 }

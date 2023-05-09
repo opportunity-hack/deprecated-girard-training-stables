@@ -1,5 +1,5 @@
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar.js';
 import Signup from './components/Signup/Signup.js';
 import SlotPicker from './components/SlotPicker/SlotPicker';
@@ -14,13 +14,13 @@ function App() {
     <div className="App">
       <main>
         <Navbar></Navbar>
-        <Switch>
-            <Route path="/" component={Login} exact />
-            <Route path="/signup" component={Signup} />
-            <Route path="/volunteer" component={SlotPicker} />
-            <Route path="/create" component={CreateEvent} />
-            <Route path="/profile" component={Profile} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Login/>} exact />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/volunteer" element={<SlotPicker />} />
+          <Route path="/create" element={<CreateEvent />} />
+          <Route path="/profile" element={<Profile/>} />
+        </Routes>
       </main>
     </div>
   );

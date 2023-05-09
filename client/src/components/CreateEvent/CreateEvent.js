@@ -1,9 +1,9 @@
 import DatePicker from '../Datepicker/Datepicker';
+import { styled } from '@mui/material/styles';
 import {getBearerToken, authenticate} from "../../getToken"
 
 import React, { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import makeStyles from '@mui/styles/makeStyles';
 import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
@@ -18,8 +18,25 @@ import Timepicker from '../Timepicker/Timepicker';
 import axios from 'axios';
 import moment from 'moment';
 
-export default function CreateEvent(props) {
+const PREFIX = 'CreateEvent';
 
+const classes = {
+    formControl: `${PREFIX}-formControl`
+};
+
+const StyledCard = styled(Card)((
+    {
+        theme
+    }
+) => ({
+    [`& .${classes.formControl}`]: {
+        margin: theme.spacing(1),
+        minWidth: '10rem',
+        height: '4rem'
+    }
+}));
+
+export default function CreateEvent(props) {
     const [formVal, setFormValue] = useState({
         startDate: '',
         endDate: '',
@@ -251,20 +268,13 @@ export default function CreateEvent(props) {
         props.handleClose();
     }
 
-    const useStyles = makeStyles((theme) => ({
-        formControl: {
-            margin: theme.spacing(1),
-            minWidth: '10rem',
-            height: '4rem'
-        }
-    }));
-
-    const classes = useStyles();
 
 
 
-    return ( // Get all the data that we need from the user
-        <Card style={{ width: '50%', padding: '2% 3%', margin: 'auto', justifyContent: 'center' }} className="flex flex-grow">
+
+    return (
+        // Get all the data that we need from the user
+        <StyledCard style={{ width: '50%', padding: '2% 3%', margin: 'auto', justifyContent: 'center' }} className="flex flex-grow">
             <CloseIcon style={{float: 'right', fontSize: '2rem', cursor: 'pointer'}} onClick={props.handleClose} />
             <header className="heading modal-heading">Create New Event</header>
             <form className="event-form" onSubmit={submitEventRequest}>
@@ -337,6 +347,6 @@ export default function CreateEvent(props) {
                 </div>
                 <Button color="primary" type="submit" variant="contained" onClick={submitEventRequest} style={{ width: '100%', margin: '3rem 0 0 0' }}>Create Event</Button>
             </form>
-        </Card>
-    )
+        </StyledCard>
+    );
 }

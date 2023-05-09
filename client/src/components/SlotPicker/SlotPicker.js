@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+
 import './SlotPicker.css';
 import Card from '../Card/Card';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -18,7 +18,7 @@ import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import oldEvents from '../../mock/events';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 function SlotPicker(props) {
@@ -32,7 +32,7 @@ function SlotPicker(props) {
     //Array to display the day header
     const displaydays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    let history = useHistory();
+    let navigate = useNavigate();
     
     const handleClose = () => {
         setOpen(false);
@@ -85,7 +85,7 @@ function SlotPicker(props) {
     //     [events]
     //   )
     const handleCreateEvent = () => {
-        history.push('/create');
+        navigate('/create');
     }
 
     const handleSelectEvent = useCallback(

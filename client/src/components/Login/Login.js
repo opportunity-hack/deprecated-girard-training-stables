@@ -1,10 +1,10 @@
 
 import './Login.css';
+import { styled } from '@mui/material/styles';
 import Card from '../Card/Card.js';
 import Button from '@mui/material/Button'
 import React from 'react';
 import PropTypes from 'prop-types';
-import makeStyles from '@mui/styles/makeStyles';
 import Input from '@mui/material/Input';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -17,19 +17,29 @@ import Error from '../Error/Error';
 import { useAuth0 } from "@auth0/auth0-react";
 
 
-//Taken from Signup.js
-const useStyles = makeStyles((theme) => ({
-    root: {
+const PREFIX = 'Login';
+
+const classes = {
+    root: `${PREFIX}-root`
+};
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')((
+    {
+        theme
+    }
+) => ({
+    [`& .${classes.root}`]: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
-    },
+    }
 }));
 
 function Login(props) {
 
     const { loginWithRedirect } = useAuth0();
 
-    const classes = useStyles();
+
     const [value, setValue] = React.useState(0);
     const [formVal, setFormValue] = React.useState({
         email: '',
@@ -67,7 +77,7 @@ function Login(props) {
     }
 
     return (
-        <>
+        (<Root>
             <br></br>
             <br></br>
             <br></br>
@@ -84,7 +94,7 @@ function Login(props) {
                     </div>
                 </div>
             </div>
-        </>
+        </Root>)
     );
 }
 
