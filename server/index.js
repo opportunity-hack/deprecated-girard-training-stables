@@ -26,10 +26,10 @@ var jwtCheck = jwt({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: 'https://dev-6ir-6qcd.us.auth0.com/.well-known/jwks.json'
+        jwksUri: 'https://dev-5wed6txz.us.auth0.com/.well-known/jwks.json'
   }),
   audience: 'https://girard-server.herokuapp.com', // https://girard-server.herokuapp.com
-  issuer: 'https://dev-6ir-6qcd.us.auth0.com/',
+    issuer: 'https://dev-5wed6txz.us.auth0.com/',
   algorithms: ['RS256']
 });
 

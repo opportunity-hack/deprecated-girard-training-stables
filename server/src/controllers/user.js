@@ -5,10 +5,16 @@ const { dataHandler } = require("../utils/responseHandler");
 module.exports.getUsers = asyncHandler(async function(req, res) {
   let email = req.query.email;
   var response;
-  
+  // Log 
+  console.log("req.query:", req.query);
+  console.log("req.body:", req.body);
+  console.log("email:", email);
+
   if (email) 
   {
+    console.log("Checking for email")
     response = await User.findOne({ email: email});
+    console.log("response:", response);
   }
   else
   {
