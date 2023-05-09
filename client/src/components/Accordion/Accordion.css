@@ -9,3 +9,8 @@
     background-color: #aa0000 !important;
     color: white !important;
 }
+
+.muted {
+    color: #888;
+    font-size: 0.8rem;    
+}

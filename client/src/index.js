@@ -5,9 +5,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from "@auth0/auth0-react";
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider, createTheme, adaptV4Theme } from '@mui/material/styles';
 
-const theme = createMuiTheme({
+const theme = createTheme(adaptV4Theme({
   palette: {
     primary: {
       main: '#3700B3'
@@ -16,7 +16,7 @@ const theme = createMuiTheme({
       main: '#03DAC5'
     }
   }
-});
+}));
 
 
 ReactDOM.render(
@@ -30,9 +30,11 @@ ReactDOM.render(
   >
     <React.StrictMode>
       <BrowserRouter>
-       <MuiThemeProvider theme={theme}>
-          <App />
-       </MuiThemeProvider>
+       <StyledEngineProvider injectFirst>
+         <ThemeProvider theme={theme}>
+            <App />
+         </ThemeProvider>
+       </StyledEngineProvider>
       </BrowserRouter>
     </React.StrictMode>,
   </Auth0Provider>,

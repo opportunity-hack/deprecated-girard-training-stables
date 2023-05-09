@@ -1,15 +1,18 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import CloseIcon from '@material-ui/icons/Close';
+import withStyles from '@mui/styles/withStyles';
+import MuiAccordion from '@mui/material/Accordion';
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
 import './Accordion.css';
 import { v4 } from 'uuid';
 import { useAuth0  } from '@auth0/auth0-react';
 import axios from 'axios';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+
 
 const Accordion = withStyles({
   root: {
@@ -70,11 +73,21 @@ const [AdvancedAccess, setAccess] = React.useState(false);
 
   const {user, isAuthenticated, isLoading} = useAuth0();
 
+  const volunteerDescriptions = {
+    "barn crew": "Barn Crew volunteers help with the daily care of the horses. This includes feeding, watering, and cleaning stalls. Barn Crew volunteers must be at least 16 years old.",
+    "pasture crew" : "Pasture Crew volunteers help with the daily care of the horses. This includes feeding, watering, and cleaning pastures. Pasture Crew volunteers must be at least 16 years old.",
+    "lesson assistant" : "Lesson Assistant volunteers help with the daily care of the horses. This includes feeding, watering, and cleaning stalls. Lesson Assistant volunteers must be at least 16 years old.",
+    "sidewalker" : "Sidewalker volunteers help with the daily care of the horses. This includes feeding, watering, and cleaning stalls. Sidewalker volunteers must be at least 16 years old.",
+    "horse leader" : "Horse Leader volunteers help with the daily care of the horses. This includes feeding, watering, and cleaning stalls. Horse Leader volunteers must be at least 16 years old."
+  }
+
+
   if (isLoading) {
     return <div>Loading ...</div>;
   }
 
   let data = props.data;
+  console.log("Props Data:", data);
 
   if(isAuthenticated)
   {
@@ -91,7 +104,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
     setUserID(res.data._id);
 
     //Check if user is an admin
-    if(res.data.userType == 'volunteer coordinator')
+    if(res.data.userType === 'volunteer coordinator')
     {
       setAccess(true);
     }
@@ -103,7 +116,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
   const CheckForRegister = (data, position) => {
     let newLesson = data;
     let UserIndex = newLesson.volunteers[position].signedUp.indexOf(UserID);
-    if(UserIndex == -1)
+    if(UserIndex === -1)
     {
       return false;
     }
@@ -125,12 +138,10 @@ const [AdvancedAccess, setAccess] = React.useState(false);
 
 
   const handleSignUpForEvent = (data, position) => {
-    //TODO: SIGN UP FLow
-    //TEST MESSGE
+    // TODO: SIGN UP FOR EVENT    
     console.log("Accordion handleSignUpForEvent");
     console.log("data:", data);
     console.log("position:", position);
-
     console.log("volunteers in position:",data.volunteers[position]);
 
 
@@ -150,6 +161,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
         console.log('User Returned:',res.data);
         console.log('user ID:', res.data._id);
         
+        
         let newLesson = data;
         newLesson.volunteers[position].signedUp.push(res.data._id);
         console.log(newLesson);
@@ -163,6 +175,9 @@ const [AdvancedAccess, setAccess] = React.useState(false);
       .catch(err => console.log("Error-Register_for_event: ", err.data));
       props.handleClose();
   }
+
+
+
 
   const handleUnRegisterForEvent = (data, position) => {
     console.log("Accordion handleUnRegisterForEvent");
@@ -227,7 +242,14 @@ const [AdvancedAccess, setAccess] = React.useState(false);
                       {data.volunteers[pos].minVolunteers >= 1 ?
                         <Accordion key={v4()} square expanded={expanded === `panel-${index}`} onChange={handleChange(`panel-${index}`)}>
                             <AccordionSummary aria-controls="panel1d-content" id={`panel1d-header-${index}`}>
-                              <Typography >{pos}</Typography>
+                            <Stack direction="column" spacing={1}>
+                              <Stack direction="row" spacing={1}>
+                                <Chip label={data.volunteers[pos].signedUp.length === data.volunteers[pos].minVolunteers ? "Full" : "Open"} />                            
+                                  <Typography>{pos}</Typography>
+                                  <Chip label={`${data.volunteers[pos].signedUp.length} of ${data.volunteers[pos].minVolunteers} filled`} />                                                                                          
+                              </Stack>
+                            <Typography className="muted">{volunteerDescriptions[pos]}</Typography>
+                            </Stack>
                             </AccordionSummary>
                             <AccordionDetails >
                                 <Accordion key={v4()} square expanded={subExpanded === `subpanel-${pos}-${index}`} onChange={handleSubChange(`subpanel-${pos}-${index}`)}>

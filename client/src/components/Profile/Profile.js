@@ -1,9 +1,9 @@
 import './Profile.css';
-import Input from '@material-ui/core/Input';
+import Input from '@mui/material/Input';
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();

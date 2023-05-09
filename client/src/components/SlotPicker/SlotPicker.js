@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import './SlotPicker.css';
 import Card from '../Card/Card';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SimpleModal from '../Modal/Modal';
 import CustomAccordion from '../Accordion/Accordion';
 import CreateEvent from '../CreateEvent/CreateEvent';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 import { useAuth0 } from "@auth0/auth0-react";
 import {
     Calendar,
