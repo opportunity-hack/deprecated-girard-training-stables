@@ -150,6 +150,24 @@ npm i && npm start
 
 ## 3. Client side
 
+The client uses the following environment variables:
+
+- `NODE_ENV`: changes the behaviour of the application for deployment if set to
+  `"production"`
+- `REACT_APP_AUTH0_DOMAIN`: the url of an auth0 tenant (no trailing slash) to use for
+  authentication
+- `REACT_APP_AUTH0_CLIENT_ID`: the client ID of an auth0 application configured on the
+  tenant
+- `REACT_APP_AUTH0_CLIENT_SECRET`: the client secret associated with that auth0 application
+
+If `NODE_ENV` is set to "production", environment variables should be set
+directly on the host. Otherwise, these variables can be defined in a `.env` file
+in the root directory of the client that will be read at runtime. Note that the
+prefix `REACT_APP_` is
+[needed](https://create-react-app.dev/docs/adding-custom-environment-variables#adding-development-environment-variables-in-env)
+for the webpack development server used by react-scripts to read and use an
+environment variable from `.env`.
+
 - To Start the app
 ```
 cd client/

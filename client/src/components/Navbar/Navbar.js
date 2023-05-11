@@ -24,7 +24,7 @@ function Navbar() {
                         <Link to="/profile" style={{ textDecoration: 'none' }}>Profile</Link>
                     </li>
                     <li>
-                        <Link onClick={() => logout({ returnTo: "https://girard-client.herokuapp.com" })} style={{ textDecoration: 'none' }}>Log Out</Link>
+                        <Link onClick={() => logout({ returnTo: window.location.origin })} style={{ textDecoration: 'none' }}>Log Out</Link>
                     </li>
                     </ul>
                 </div>

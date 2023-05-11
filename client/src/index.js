@@ -9,7 +9,6 @@ import { createRoot } from 'react-dom/client';
 const container = document.getElementById('root');
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
 
-
 const theme = createTheme(adaptV4Theme({
   palette: {
     primary: {
@@ -21,15 +20,11 @@ const theme = createTheme(adaptV4Theme({
   }
 }));
 
-
 root.render(
   <Auth0Provider
-    // old from capstone: domain="dev-6ir-6qcd.us.auth0.com"
-    domain="dev-5wed6txz.us.auth0.com"
-    // old from capstone: clientId="YaKtx23CDf33oUGDlVte9TpLpvT5u2oM"
-    clientId="OX5s43OqvwG8cw5URn7y4KJyC8JhP7Pd"
-    //redirectUri="https://girard-client.herokuapp.com/signup"
-    redirectUri="http://localhost:3000/signup"
+    domain={process.env.REACT_APP_AUTH0_DOMAIN}
+    clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+    redirectUri={window.location.origin + "/signup"}
   >
     <React.StrictMode>
       <BrowserRouter>
