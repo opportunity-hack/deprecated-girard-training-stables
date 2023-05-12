@@ -5,9 +5,21 @@ import React from "react";
 import Button from '@mui/material/Button'
 import { useAuth0 } from "@auth0/auth0-react";
 
-function Navbar() {
+function AdminLink({ name, route, isAdmin }) {
+    if (isAdmin) {
+        return (
+            <li>
+                <Link to={route} style={{ textDecoration: 'none' }}>{name}</Link>
+            </li>
+        )
+    }
+    return
+}
 
+function Navbar() {
     const { logout, user, isAuthenticated, isLoading } = useAuth0();
+    console.log(user)
+    const isAdmin = user?.["https://girard-server.herokuapp.com/roles"]?.includes('admin');
 
         return  (
             isAuthenticated && 
@@ -17,6 +29,7 @@ function Navbar() {
                     <span className="npo-heading">Girard Training Stables</span>
                     <span className="filler"></span>
                     <ul className="links">
+                    <AdminLink name="Create Event" route="/create" isAdmin={isAdmin} />
                     <li>
                         <Link to="/volunteer" style={{ textDecoration: 'none' }}>Calendar</Link>
                     </li>

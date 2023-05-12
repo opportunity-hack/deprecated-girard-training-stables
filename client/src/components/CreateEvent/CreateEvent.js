@@ -17,6 +17,7 @@ import Card from '../Card/Card';
 import Timepicker from '../Timepicker/Timepicker';
 import axios from 'axios';
 import moment from 'moment';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const PREFIX = 'CreateEvent';
 
@@ -66,6 +67,7 @@ export default function CreateEvent(props) {
     const [instructors, setInstructors] = useState({});
     const [instructorsArr, setInstructorsArr] = useState([]);
 
+
     const intervals = ['Every day', 'Two Days', 'Three Days', 'Four Days', 'Five Days', 'Six Days', 'Weekly'];
 
     useEffect(() => {
@@ -102,6 +104,12 @@ export default function CreateEvent(props) {
 
         //setInstructors(allUsers.filter(user => user.userType == "volunteer"));
       }, []);
+
+    const { user } = useAuth0();
+    const isAdmin = user?.["https://girard-server.herokuapp.com/roles"]?.includes('admin');
+    if (!isAdmin) {
+        return <div>You aren't authorised to create new events.</div>
+    }
 
     const createNewEvent = () => {
 
