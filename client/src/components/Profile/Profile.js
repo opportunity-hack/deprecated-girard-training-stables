@@ -1,7 +1,7 @@
 import './Profile.css';
 import Input from '@mui/material/Input';
 import React from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { withAuthenticationRequired, useAuth0 } from "@auth0/auth0-react";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
@@ -14,7 +14,6 @@ const Profile = () => {
 
   
 return (
-  isAuthenticated && (
     <div>
       <img src={user.picture} alt={user.name} /> 
     <div class="row">
@@ -36,8 +35,9 @@ return (
         </div>
     </div>
     </div>
-  )
 );
 };
 
-export default Profile;
+export default withAuthenticationRequired(Profile, {
+    onRedirecting: () => <div>Redirecting you to the login page...</div>
+});
