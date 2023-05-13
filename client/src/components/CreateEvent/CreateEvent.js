@@ -18,7 +18,7 @@ import Timepicker from '../Timepicker/Timepicker';
 import axios from 'axios';
 import moment from 'moment';
 import { useAuth0 } from "@auth0/auth0-react";
-
+import httpClient from "../../httpClient";
 const PREFIX = 'CreateEvent';
 
 const classes = {
@@ -263,7 +263,7 @@ export default function CreateEvent(props) {
 
         console.log(form)
 
-        axios.post('http://localhost:2222/lessons', form)
+        httpClient.post('http://localhost:2222/lessons', form)
             .then(res => {
                 console.log('Lesson created', res);
                 let events = JSON.parse(JSON.stringify(props.data));
@@ -273,7 +273,7 @@ export default function CreateEvent(props) {
                 props.submit(events);
             })
             .catch(err => console.log(err.data));
-        props.handleClose();
+//        props.handleClose();
     }
 
 

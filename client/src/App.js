@@ -1,4 +1,5 @@
 import './App.css';
+import { useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar.js';
 import Signup from './components/Signup/Signup.js';
@@ -7,6 +8,8 @@ import CreateEvent from './components/CreateEvent/CreateEvent';
 import Login from './components/Login/Login';
 import Profile from './components/Profile/Profile';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { addAccessTokenInterceptor } from './httpClient';
+import { useAuth0 } from '@auth0/auth0-react';
 
 sessionStorage.setItem("email",'');
 
@@ -17,7 +20,13 @@ const ProtectedRoute = ({ component, ...args }) => {
 
 const redirectMessage = () => <div>Redirecting you...</div>;
 
+
 function App() {
+  const { getAccessTokenSilently } = useAuth0();
+  useEffect(() => {
+    addAccessTokenInterceptor(getAccessTokenSilently);
+  }, [getAccessTokenSilently]);
+
   return (
     <div className="App">
       <main>

@@ -39,7 +39,8 @@ root.render(
             domain={process.env.REACT_APP_AUTH0_DOMAIN}
             clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
             authorizationParams = {{
-                redirect_uri: window.location.origin + "/signup"
+                redirect_uri: window.location.origin + "/signup",
+                audience: "https://girard-server.herokuapp.com",
             }}
           >
                <StyledEngineProvider injectFirst>

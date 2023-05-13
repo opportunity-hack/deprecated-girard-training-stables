@@ -15,14 +15,9 @@ See [this GDoc](https://docs.google.com/document/d/1shUfn48GiY9GI5TwUXjtRiCZkh1B
 - Peter: Backend
 - Shreyas: Backend + Mongo
 
-
-
-
 ## Useful links
 - [Problem statement](https://ohack.dev/project/61c75dac1aaf11edbca3acde48001122)
 - [#npo-girard-training-stables Slack channel](https://opportunity-hack.slack.com/archives/C01CMCF4BUN)
-
-
 ## Setup instructions
 We use Atlas (MongoDB service) free-tier (M0) to host our database.  Create an
 account and a database over at <https://cloud.mongodb.com/>. You will need a URI
@@ -48,6 +43,18 @@ action, and then go to "Actions > Flows > Login" and set that action to run
 after the user logs in so that role information will be attached to their
 identity token.
 
+Make an Auth0 application for the frontend client. You will need the tenant
+domain, and the client ID and client secret from that application for the
+following steps. You will also need to make an Auth0 API with the identifier
+`https://girard-server.herokuapp.com`. This will be used as the audience
+authorization parameter when requesting access tokens for the API. The following
+permissions need to be added to the API and given to the admin role:
+
+- `create:events`
+- `read:events`
+- `update:events`
+- `delete:events`
+
 ## 1. Create a .env file
 In ./server, create a .env file that will allow NodeJS to read environment variables, add these variables.
 ```
@@ -56,6 +63,8 @@ PORT=2222
 EMAIL=test@something.com
 PASSWORD=daklsdjad
 MAIN_URL=www.ohack.org
+AUTH0_AUDIENCE=https://girard-server.herokuapp.com
+AUTH0_DOMAIN=<YOUR AUTH0 TENANT DOMAIN>
 ```
 
 ## 2. Server side
@@ -167,8 +176,6 @@ npm i && npm start
     }
 ]
   ```
-
-
 
 ## 3. Client side
 
