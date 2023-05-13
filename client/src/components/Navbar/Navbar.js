@@ -18,7 +18,6 @@ function AdminLink({ name, route, isAdmin }) {
 
 function Navbar() {
     const { logout, user, isAuthenticated, isLoading } = useAuth0();
-    console.log(user)
     const isAdmin = user?.["https://girard-server.herokuapp.com/roles"]?.includes('admin');
 
         return  (
@@ -29,6 +28,7 @@ function Navbar() {
                     <span className="npo-heading">Girard Training Stables</span>
                     <span className="filler"></span>
                     <ul className="links">
+                    <AdminLink name="Admin" route="/admin" isAdmin={isAdmin} />
                     <AdminLink name="Create Event" route="/create" isAdmin={isAdmin} />
                     <li>
                         <Link to="/volunteer" style={{ textDecoration: 'none' }}>Calendar</Link>
