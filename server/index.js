@@ -38,6 +38,23 @@ app.use(cors());
 app.use(express.json());
 //app.use(jwtCheck);
 
+var winston = require('winston'), expressWinston = require('express-winston');
+
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.json()
+  ),
+  meta: true,
+  msg: "HTTP {{req.method}} {{req.url}}",
+  expressFormat: true,
+  colorize: false,
+  ignoreRoute: function (req, res) { return false; }
+}));
+
+
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');
 const userRouter = require('./src/routes/user');
