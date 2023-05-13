@@ -25,9 +25,9 @@ function SlotPicker(props) {
 
     const { user, isAuthenticated, isLoading } = useAuth0();
     const [open, setOpen] = React.useState(false);
-    const [Admin, setAdmin] = React.useState(false);
     const [body, setBody] = React.useState('');
     const [events, setEvents] = React.useState([]);
+    const isAdmin = user?.["https://girard-server.herokuapp.com/roles"]?.includes("admin");
 
     //Array to display the day header
     const displaydays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -101,31 +101,7 @@ function SlotPicker(props) {
 
     if (isLoading) {
         return <div>Loading ...</div>;
-      }
-
-    if(isAuthenticated)
-    {
-        var safeEmail = user.email;
      }
-     else
-     {
-        var safeEmail = "BAD@gmail.com"
-     }
-     //Check if a user with the email exists
-     console.log('Email checked: ', safeEmail);
-    axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
-     .then(res => {
-        console.log('User Returned:',res.data);
-        console.log('User Type:',res.data.userType);
-        if (res.data.userType == 'volunteer coordinator')
-        {
-            setAdmin(true);
-        }
-     })
-     .catch(err => console.log("Error-AdminCheck: ", err.data));
-
-
-   
 
     //Shows the legend when the info button is clicked
     const showInfo = () => {
@@ -141,14 +117,8 @@ function SlotPicker(props) {
         openModal();
     }
 
-   
-
-
-
-
     const localizer = momentLocalizer(moment)
 
-    
     let content = (
         <div className="calendar-container">
             <div className="flex">
@@ -170,7 +140,7 @@ function SlotPicker(props) {
                 />
             </div>
 
-            {Admin && <AddCircleIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={handleCreateEvent} className="create-event"/>}
+            {isAdmin && <AddCircleIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={handleCreateEvent} className="create-event"/>}
             <InfoIcon style={{fontSize:"3.5rem"}} color="secondary" onClick={showInfo} className="show-info"/>
 
             <div className="event">

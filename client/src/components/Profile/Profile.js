@@ -13,8 +13,7 @@ const Profile = () => {
   }
 
   
-return (
-  isAuthenticated && (
+return isAuthenticated && (
     <div>
       <img src={user.picture} alt={user.name} /> 
     <div class="row">
@@ -36,7 +35,6 @@ return (
         </div>
     </div>
     </div>
-  )
 );
 };
 

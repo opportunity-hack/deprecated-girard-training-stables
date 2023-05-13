@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, useNavigate } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -20,35 +20,39 @@ const theme = createTheme(adaptV4Theme({
   }
 }));
 
+const Auth0ProviderWithRedirectCallback = ({ children, ...props }) => {
+    const navigate = useNavigate();
+    const onRedirectCallback = (appState) => {
+        navigate((appState && appState.returnTo) || window.location.pathname);
+    };
+    return (
+        <Auth0Provider onRedirectCallback={onRedirectCallback} {...props}>
+            {children}
+        </Auth0Provider>
+    );
+}
+
 root.render(
-  <Auth0Provider
-    domain={process.env.REACT_APP_AUTH0_DOMAIN}
-    clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-    redirectUri={window.location.origin + "/signup"}
-  >
     <React.StrictMode>
       <BrowserRouter>
-       <StyledEngineProvider injectFirst>
-         <ThemeProvider theme={theme}>
-            <App />
-         </ThemeProvider>
-       </StyledEngineProvider>
+          <Auth0ProviderWithRedirectCallback
+            domain={process.env.REACT_APP_AUTH0_DOMAIN}
+            clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+            authorizationParams = {{
+                redirect_uri: window.location.origin + "/signup",
+                audience: "https://girard-server.herokuapp.com",
+            }}
+          >
+               <StyledEngineProvider injectFirst>
+                 <ThemeProvider theme={theme}>
+                    <App />
+                 </ThemeProvider>
+               </StyledEngineProvider>
+          </Auth0ProviderWithRedirectCallback>,
       </BrowserRouter>
     </React.StrictMode>,
-  </Auth0Provider>,
   document.getElementById("root")
 );
-
-/* ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <MuiThemeProvider theme={theme}>
-        <App />
-      </MuiThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
-); */
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -17,7 +17,8 @@ import Card from '../Card/Card';
 import Timepicker from '../Timepicker/Timepicker';
 import axios from 'axios';
 import moment from 'moment';
-
+import { useAuth0 } from "@auth0/auth0-react";
+import httpClient from "../../httpClient";
 const PREFIX = 'CreateEvent';
 
 const classes = {
@@ -66,6 +67,7 @@ export default function CreateEvent(props) {
     const [instructors, setInstructors] = useState({});
     const [instructorsArr, setInstructorsArr] = useState([]);
 
+
     const intervals = ['Every day', 'Two Days', 'Three Days', 'Four Days', 'Five Days', 'Six Days', 'Weekly'];
 
     useEffect(() => {
@@ -102,6 +104,12 @@ export default function CreateEvent(props) {
 
         //setInstructors(allUsers.filter(user => user.userType == "volunteer"));
       }, []);
+
+    const { user } = useAuth0();
+    const isAdmin = user?.["https://girard-server.herokuapp.com/roles"]?.includes('admin');
+    if (!isAdmin) {
+        return <div>You aren't authorised to create new events.</div>
+    }
 
     const createNewEvent = () => {
 
@@ -255,7 +263,7 @@ export default function CreateEvent(props) {
 
         console.log(form)
 
-        axios.post('http://localhost:2222/lessons', form)
+        httpClient.post('http://localhost:2222/lessons', form)
             .then(res => {
                 console.log('Lesson created', res);
                 let events = JSON.parse(JSON.stringify(props.data));
@@ -265,7 +273,7 @@ export default function CreateEvent(props) {
                 props.submit(events);
             })
             .catch(err => console.log(err.data));
-        props.handleClose();
+//        props.handleClose();
     }
 
 
