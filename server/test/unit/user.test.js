@@ -23,6 +23,7 @@ const app = express();
 // Mock Data
 
 const validUser = {
+    user_id: "auth0|507f1f77bcf86cd799439020",
     firstName: "joe",
     lastName: "schmoe",
     userType: "volunteer",
@@ -36,6 +37,7 @@ const validUser = {
 }
 
 const validUserIncomplete = {
+    user_id: "auth0|123456",
     email: "alice@example.com"
 }
 

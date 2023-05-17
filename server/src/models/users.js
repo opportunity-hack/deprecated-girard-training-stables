@@ -2,6 +2,14 @@ const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+  // The auth0 id associated with a user. 
+  // This is different from the _id ObjectID
+  // used by mongoose
+  user_id: {
+      type: String,
+      required: true,
+      unique: true,
+  },
   firstName: {
     type: String,
     required: false
