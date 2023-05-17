@@ -122,10 +122,10 @@ const [AdvancedAccess, setAccess] = React.useState(false);
   axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
   .then(res => {
     //Check for the users id in the signed up users
-    setUserID(res.data._id);
+    setUserID(res.data[0]._id);
 
     //Check if user is an admin
-    if(res.data.userType === 'volunteer coordinator')
+    if(res.data[0].userType === 'volunteer coordinator')
     {
       setAccess(true);
     }
@@ -179,12 +179,12 @@ const [AdvancedAccess, setAccess] = React.useState(false);
 
     axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
       .then(res => {
-        console.log('User Returned:',res.data);
-        console.log('user ID:', res.data._id);
+        console.log('User Returned:',res.data[0]);
+        console.log('user ID:', res.data[0]._id);
         
         
         let newLesson = data;
-        newLesson.volunteers[position].signedUp.push(res.data._id);
+        newLesson.volunteers[position].signedUp.push(res.data[0]._id);
         console.log(newLesson);
 
         let urlExtension = '/lessons/' + newLesson._id;
@@ -221,13 +221,13 @@ const [AdvancedAccess, setAccess] = React.useState(false);
 
     axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
       .then(res => {
-        console.log('User Returned:',res.data);
-        console.log('user ID:', res.data._id);
+        console.log('User Returned:',res.data[0]);
+        console.log('user ID:', res.data[0]._id);
         
         let newLesson = data;
 
         //Get the index of the user Unregistering
-        let UserIndex = newLesson.volunteers[position].signedUp.indexOf(res.data._id);
+        let UserIndex = newLesson.volunteers[position].signedUp.indexOf(res.data[0]._id);
         console.log("Index to be removed:", UserIndex);
 
         if(UserIndex != -1)
