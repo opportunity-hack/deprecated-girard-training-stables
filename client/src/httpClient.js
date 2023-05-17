@@ -7,7 +7,7 @@ const httpClient = axios.create();
 export const addAccessTokenInterceptor = (getAccessTokenSilently) => {
     httpClient.interceptors.request.use(async (config) => {
         const token = await getAccessTokenSilently({
-            authorizationParms: {
+            authorizationParams: {
                 audience: `https://girard-server.herokuapp.com`
             },
         });
