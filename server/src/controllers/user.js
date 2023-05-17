@@ -4,18 +4,16 @@ const { dataHandler } = require("../utils/responseHandler");
 const mongoose = require("mongoose");
 
 module.exports.getUsers = asyncHandler(async function(req, res) {
-  let email = req.query.email;
-  var response;
-  if (email) 
-  {
-    response = await User.findOne({ email: email});
-    console.log("response:", response);
+  try {
+      const response = await User.find(req.query)
+      if (response === undefined || response.length == 0) {
+          res.status(404).json({ message: "no users matching criteria" })
+      } else {
+          res.status(200).json(response);
+      }
+  } catch (err) {
+      res.status(500).json({ message: "internal server error", error: err});
   }
-  else
-  {
-    response = await User.find({});
-  }
-  res.status(200).json(response);
 });
 
 module.exports.createUser = asyncHandler(async function(req, res) {

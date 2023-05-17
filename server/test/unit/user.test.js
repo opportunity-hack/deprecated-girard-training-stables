@@ -55,6 +55,7 @@ const inValidUserNoEmail = {
 
 app.use(express.json());
 app.post('/users', createUser);
+app.get('/users', getUsers);
 
 // Tests
 
@@ -95,3 +96,43 @@ describe("POST /users", () => {
     });
 });
 
+describe("GET /users", () => {
+    it("retrieves users filtering by query parameters", async () => {
+        // creating users as in the above tests
+        await request(app)
+            .post('/users')
+            .send(validUser)
+            .set('Accept', 'application/json')
+
+        let res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body[0]).toEqual(expect.objectContaining(validUser));
+
+        await request(app)
+            .post('/users')
+            .send(validUserIncomplete)
+            .set('Accept', 'application/json')
+
+        res = await request(app)
+            .get('/users')
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toEqual(expect.arrayContaining(
+            [
+                expect.objectContaining(validUser),
+                expect.objectContaining(validUserIncomplete),
+            ]));
+    });
+
+    it("returns a 404 error if requested user(s) is/are not found", async () => {
+        // creating users as in the above tests
+        let res = await request(app)
+            .get('/users')
+            .query({ email: "nonexistent@example.com"})
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(404);
+    });
+});
