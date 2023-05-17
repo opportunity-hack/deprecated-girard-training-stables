@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const connectDB = require('./src/models/db/connector');
 const { errorHandler } = require('./src/middlewares/errorHandler');
+const { validateAccessToken } = require("../middlewares/auth0.middlewares");
 // body-parser no longer needed in newer versions of express -aaron
 // const bodyParser = require ('body-parser');
 const { expressjwt: jwt } = require('express-jwt');
@@ -58,6 +59,9 @@ app.use(expressWinston.logger({
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');
 const userRouter = require('./src/routes/user');
+
+// require authentication to access all routes
+app.use(validateAccessToken)
 
 app.use('/horses', horseRouter);
 app.use('/lessons', lessonRouter);
