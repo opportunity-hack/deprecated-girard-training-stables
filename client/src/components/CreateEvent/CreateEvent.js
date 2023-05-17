@@ -1,6 +1,5 @@
 import DatePicker from '../Datepicker/Datepicker';
 import { styled } from '@mui/material/styles';
-import {getBearerToken, authenticate} from "../../getToken"
 
 import React, { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
