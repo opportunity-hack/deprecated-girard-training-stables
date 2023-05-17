@@ -1,9 +1,9 @@
-import { 
+const { 
   getUsers,
   createUser,
   deleteUser, 
   updateUser 
-} from "../controllers/user";
+} = require("../controllers/user");
 const router = require('express').Router();
 
 router.route("/").get(getUsers).post(createUser)
