@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const User = require("../models/users");
 const { dataHandler } = require("../utils/responseHandler");
+const mongoose = require("mongoose");
 
 module.exports.getUsers = asyncHandler(async function(req, res) {
   let email = req.query.email;
@@ -18,15 +19,16 @@ module.exports.getUsers = asyncHandler(async function(req, res) {
 });
 
 module.exports.createUser = asyncHandler(async function(req, res) {
-  console.log("starting to create user");
-
-  console.log("req.body:", req.body);
-  
-  const response = await User.create(req.body);
-
-  res.status(201).json(response);
-
-  console.log("finished creating user");
+  try {
+      const response = await User.create(req.body);
+      res.status(201).json(response);
+  } catch(err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+        res.status(400).json(err.errors);
+    } else {
+        res.status(500).json({ message: "internal server error", error: err});
+    }
+  }
 });
 
 module.exports.updateUser = asyncHandler(async function(req, res) {
