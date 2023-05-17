@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: true
+    required: false
   },
   lastName: {
     type: String,
@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
   userType: {
     type: String,
     enum: ['instructor', 'volunteer', 'volunteer coordinator'],
-    required: true
+    required: true,
+    default: "volunteer"
   },
   email: {
     type: String,
@@ -24,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: false,
     match: [/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, "Please provide a valid phone number"]
   },
   // in inches
