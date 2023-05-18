@@ -17,7 +17,7 @@ import {
 import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import oldEvents from '../../mock/events';
-import axios from 'axios';
+import httpClient from '../../httpClient';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -49,7 +49,7 @@ function SlotPicker(props) {
     //Gets data from server
     let getData = async () => {
     
-        axios.get('http://localhost:2222/lessons')
+        httpClient.get('http://localhost:2222/lessons')
             .then(response => {
                 console.log("response:", response);
                 let newEvents = response.data;
