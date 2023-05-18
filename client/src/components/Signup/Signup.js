@@ -14,10 +14,10 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Error from '../Error/Error';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Auth0Context, useAuth0 } from "@auth0/auth0-react";
-
+import httpClient from "../../httpClient";
+import { useState, useEffect } from 'react';
 
 const PREFIX = 'Signup';
 
@@ -70,18 +70,12 @@ function a11yProps(index) {
   };
 }
 
-//variable to ensure that axios only checks once
-var counter = 0;
-
 function Signup() {
-    //Pull in auth 0
     const { user, isAuthenticated, isLoading } = useAuth0();
     let navigate = useNavigate ();
-
-    const [value, setValue] = React.useState(0);
-
-
-    const [formVal, setFormValue] = React.useState({
+    const [userID, setUserID] = useState("");
+    const [value, setValue] = useState(0);
+    const [formVal, setFormValue] = useState({
         firstname: '',
         lastname: '',
         phone: '',
@@ -96,40 +90,36 @@ function Signup() {
         leading: false
     });
 
-
+    useEffect(() => {
+        // We want to immediately create a user in the application DB
+        // once they are redirected from the auth0 signup page, since they
+        // may proceed into the application without submitting information
+        // about themselves. 
+        // If the user already exists, we redirect them to the calendar
+        if (isAuthenticated && user.email && user.sub) {
+            const existingUser = httpClient.get(
+                process.env.REACT_APP_API_SERVER + "/me", 
+                { params: {email: user.email}}
+            ).then(res => {
+                if (res.data.length === 0 || res.data === undefined) {
+                const newUser = { user_id: user.sub, email: user.email}
+                httpClient.post(
+                    process.env.REACT_APP_API_SERVER + "/me",
+                    newUser)
+                    .then(res => setUserID[res.data._id])
+                    .catch(err => console.error("Could not create new user:", err.data))
+                } else {
+                    navigate('/volunteer')
+                }
+            })
+        }
+    }, [isAuthenticated, user, navigate, setUserID])
 
 
     if (isLoading) {
         return <div>Loading ...</div>;
       }
 
-
-    if(counter === 0)
-    {
-        if(isAuthenticated)
-         {
-            var safeEmail = user.email;
-        }
-        else
-        {
-            var safeEmail = "BAD@gmail.com"
-        }
-        //Check if a user with the email exists
-        console.log('Email checked: ', safeEmail);
-        axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
-        .then(res => {
-            console.log('Signup-check',res.data)
-            if (res.data != null)
-            {
-                navigate("/volunteer");
-            }
-        })
-        .catch(err => console.log(err.data));
-    }
-    //Increment to ensure only one run of axio
-    counter = counter + 1;
-
-    
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
     }
@@ -154,34 +144,17 @@ function Signup() {
 
 
     const handleSubmit = (event) => {
-        console.log("Handled Submit Start")
-        /* This code hasn't been tested yet, but I believe this should be the right way to send a HTTP Post
-        const Http = new XMLHttpRequest();
-        const url = 'https://girard-server.herokuapp.com/'; // Does this need something extra to send to a specific router? .com/positions? 
-        Http.open("POST", url);
-        Http.send(formVal);
-        Http.onreadystatechange = (e) => {
-            console.log(Http.responseText)
-        }
-        */
-        // event.preventDefault();
-       
-        console.log("Authenticated?",isAuthenticated);
-
+       event.preventDefault();
        if(isAuthenticated) 
        {
-            console.log("user is authenticated");
-
             var experienceUpdated;
             if(formVal.horseExpYrs === '')
                 experienceUpdated = 0;
             else
                 experienceUpdated = formVal.horseExpYrs;
 
-            console.log("user experience:", experienceUpdated);
-            console.log("formval.horseExpyrs", formVal.horseExpYrs);
-
             const submitForm = {
+                "user_id": user.sub,
                 "firstName": formVal.firstname,
                 "lastName": formVal.lastname,
                 "phoneNumber": formVal.phone,
@@ -197,12 +170,15 @@ function Signup() {
             }
             
             console.log("submit form:", submitForm);
+            console.log("User ID:", userID);
 
-           axios.post('http://localhost:2222/users', submitForm)
-                .then(res => console.log("result:",res.data))
+           httpClient.put(
+               process.env.REACT_APP_API_SERVER + "/me",
+               submitForm)
+                .then(res => {
+                    navigate("/volunteer");
+                })
                 .catch(err => console.log("error:",err.data))
-
-            navigate("/volunteer");
         }
     }
 
@@ -210,15 +186,17 @@ function Signup() {
     return (  isAuthenticated && (
         <div className="signup-form col-flex card">
             <div className="form-content col-flex flex-grow">
-                <div className="heading">Sign Up</div>
+                <div className="heading">Tell us a bit about you</div>
+                <div>This information will help in the process of matching you with opportunities to volunteer. You'll be able to change this later in your profile page.</div>
                 <div className={classes.root}>
                         <Tabs value={value} onChange={handleTabChange} indicatorColor="primary" centered>
                             <Tab label="Basic Details" {...a11yProps(0)} />
-                            <Tab label="Skills" {...a11yProps(1)} />
+                            <Tab label="Additional Information" {...a11yProps(1)} />
                         </Tabs>
 
                     <form onSubmit={handleSubmit} className="col-flex flex-grow">
                         <TabPanel value={value} index={0} className="panel">
+                            <div>{`Email: ${user.email}`}</div>
                             <div className="name-field">
                                 <div className="flex-grow" style={{width: '45%'}}>
                                     <Input className="input-field" type="text" name="firstname" value={formVal.firstname} onChange={handleChange} placeholder="First Name"/>
@@ -227,9 +205,6 @@ function Signup() {
                                 <div className="flex-grow" style={{width: '45%'}}>
                                     <Input className="input-field" type="text" name="lastname" value={formVal.lastname} onChange={handleChange} placeholder="Last Name"/>
                                 </div>
-                            </div>
-                            <div>
-                                <Input editable={false} className="input-field" type="email" name="email" value={user.email} onChange={handleChange} placeholder={user.email}/>
                             </div>
                             <div>
                                 <Input className="input-field" type="tel" name="phone" value={formVal.phone} onChange={handleChange} placeholder="Phone Number"/>
@@ -248,9 +223,9 @@ function Signup() {
                             <div className="skill">
                                 <FormControlLabel
                                     control={<Checkbox name="horseExperience" checked={formVal.horseExperience} onChange={handleChange}/>}
-                                    label="Horse Experience"
+                                    label="Do you have experience with horses?"
                                 />
-                                <Input className="input-field experience-field" type="text" name="horseExpYrs" value={formVal.horseExpYrs} disabled={ !formVal.horseExperience } onChange={handleChange} placeholder="How much (in years)?"/>
+                                <Input className="input-field experience-field" type="number" name="horseExpYrs" value={formVal.horseExpYrs} disabled={ !formVal.horseExperience } onChange={handleChange} placeholder="How much (in years)?"/>
                             </div>
                             <div>
                                 <FormControlLabel

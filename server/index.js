@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const connectDB = require('./src/models/db/connector');
 const { errorHandler } = require('./src/middlewares/errorHandler');
-const { validateAccessToken } = require("../middlewares/auth0.middlewares");
+const { validateAccessToken } = require('./src/middlewares/auth0.middleware');
 // body-parser no longer needed in newer versions of express -aaron
 // const bodyParser = require ('body-parser');
 const { expressjwt: jwt } = require('express-jwt');
@@ -34,10 +34,8 @@ var jwtCheck = jwt({
   algorithms: ['RS256']
 });
 
-// middleware
 app.use(cors());
 app.use(express.json());
-//app.use(jwtCheck);
 
 var winston = require('winston'), expressWinston = require('express-winston');
 
@@ -59,6 +57,7 @@ app.use(expressWinston.logger({
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');
 const userRouter = require('./src/routes/user');
+const meRouter = require('./src/routes/me');
 
 // require authentication to access all routes
 app.use(validateAccessToken)
@@ -66,6 +65,7 @@ app.use(validateAccessToken)
 app.use('/horses', horseRouter);
 app.use('/lessons', lessonRouter);
 app.use('/users', userRouter);
+app.use('/me', meRouter);
 
 app.use(errorHandler);
 

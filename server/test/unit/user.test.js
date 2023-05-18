@@ -129,12 +129,12 @@ describe("GET /users", () => {
             ]));
     });
 
-    it("returns a 404 error if requested user(s) is/are not found", async () => {
+    it("returns an empty array if requested user(s) is/are not found", async () => {
         // creating users as in the above tests
         let res = await request(app)
             .get('/users')
             .query({ email: "nonexistent@example.com"})
             .set('Accept', 'application/json')
-        expect(res.statusCode).toEqual(404);
+        expect(res.body).toEqual([]);
     });
 });

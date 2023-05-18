@@ -6,11 +6,7 @@ const mongoose = require("mongoose");
 module.exports.getUsers = asyncHandler(async function(req, res) {
   try {
       const response = await User.find(req.query)
-      if (response === undefined || response.length == 0) {
-          res.status(404).json({ message: "no users matching criteria" })
-      } else {
-          res.status(200).json(response);
-      }
+      res.status(200).json(response);
   } catch (err) {
       res.status(500).json({ message: "internal server error", error: err});
   }
@@ -31,24 +27,13 @@ module.exports.createUser = asyncHandler(async function(req, res) {
 
 module.exports.updateUser = asyncHandler(async function(req, res) {
     const id = await User.findById(req.params.id)
-
     if (!id)
     {
       res.status(400);
       throw new Error("User not found")
     }
-
     const response = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
     res.status(200).json(response);
-
-    // old code
-    // const { id } = req.body;
-    // const response = await User.findOneAndUpdate({
-    //    _id: id 
-    // },
-    //   req.body,
-    //   { new: true }
-    // );
 });
 
 module.exports.deleteUser = asyncHandler(async function(req, res) {
