@@ -1,8 +1,10 @@
-import axios from 'axios';
+const axios = require('axios');
+const dotenv = require("dotenv")
+dotenv.config()
 
 const httpClient = axios.create();
 
-function getBearerToken() {
+function addAccessTokenInterceptor() {
     var options = { method: 'POST',
         url: 'https://' + process.env.AUTH0_DOMAIN + '/oauth/token',
         headers: { 'content-type': 'application/json' },
@@ -20,21 +22,14 @@ function getBearerToken() {
     };
 
     axios(options).then((response) => {
-        return response.data
+        const token = response.data.access_token;
+        httpClient.interceptors.request.use(async (config) => {
+            config.headers.Authorization = `Bearer ${token}`;
+            return config
+        });
     }).catch((error) => {
-        throw new Error(error);
+        throw error
     });
 }
  
-// adds access tokens to all httpClient requests. The returned Access Token will expire 
-// within a short period, so a new token needs to be retrieved periodically to simulate a 
-// non-expiring token.
-export const addAccessTokenInterceptor = () => {
-    httpClient.interceptors.request.use(async (config) => {
-        const token = getBearerToken();
-        config.headers.Authorization = `Bearer ${token}`;
-        return config
-    });
-};
-
-export default httpClient;
+module.exports = { httpClient, addAccessTokenInterceptor }

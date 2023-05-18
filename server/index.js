@@ -9,6 +9,15 @@ const { validateAccessToken } = require('./src/middlewares/auth0.middleware');
 const { expressjwt: jwt } = require('express-jwt');
 const jwks = require('jwks-rsa');
 const { auth } = require('express-oauth2-jwt-bearer');
+const { addAccessTokenInterceptor } = require('./src/utils/httpClient')
+
+// Get Auth0 management API token.
+addAccessTokenInterceptor()
+if (process.env.NODE_ENV === "production") {
+    // In production, the access token needs to be refreshed periodically before it expires.
+    const cron = require('node-cron');
+    cron.schedule("0 */12 * * *", addAccessTokenInterceptor);
+}
 
 // environment variables in .env file
 require('dotenv').config();
@@ -52,7 +61,6 @@ app.use(expressWinston.logger({
   colorize: false,
   ignoreRoute: function (req, res) { return false; }
 }));
-
 
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');

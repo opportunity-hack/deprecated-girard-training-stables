@@ -77,7 +77,7 @@ function Profile() {
   const handleSaveProfile = () => {
     // Save profile changes
     setIsEditing(false);
-    let userData = {};
+    let userData = { user_id: user.sub };
 
     if (profile.firstName !== "") {
         userData.firstName = profile.firstName;
@@ -94,6 +94,7 @@ function Profile() {
     if (profile.age !== "") {
         userData.age = profile.age;
     }
+    userData.email = profile.email
     userData.experience = profile.experience;
     profile.skills.map(skill => {
         switch(skill.name) {
