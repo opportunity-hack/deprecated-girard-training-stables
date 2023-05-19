@@ -3,11 +3,21 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const connectDB = require('./src/models/db/connector');
 const { errorHandler } = require('./src/middlewares/errorHandler');
+const { validateAccessToken } = require('./src/middlewares/auth0.middleware');
 // body-parser no longer needed in newer versions of express -aaron
 // const bodyParser = require ('body-parser');
 const { expressjwt: jwt } = require('express-jwt');
 const jwks = require('jwks-rsa');
 const { auth } = require('express-oauth2-jwt-bearer');
+const { addAccessTokenInterceptor } = require('./src/utils/httpClient')
+
+// Get Auth0 management API token.
+addAccessTokenInterceptor()
+if (process.env.NODE_ENV === "production") {
+    // In production, the access token needs to be refreshed periodically before it expires.
+    const cron = require('node-cron');
+    cron.schedule("0 */12 * * *", addAccessTokenInterceptor);
+}
 
 // environment variables in .env file
 require('dotenv').config();
@@ -33,10 +43,8 @@ var jwtCheck = jwt({
   algorithms: ['RS256']
 });
 
-// middleware
 app.use(cors());
 app.use(express.json());
-//app.use(jwtCheck);
 
 var winston = require('winston'), expressWinston = require('express-winston');
 
@@ -54,14 +62,18 @@ app.use(expressWinston.logger({
   ignoreRoute: function (req, res) { return false; }
 }));
 
-
 const horseRouter = require('./src/routes/horse');
 const lessonRouter = require('./src/routes/lesson');
 const userRouter = require('./src/routes/user');
+const meRouter = require('./src/routes/me');
+
+// require authentication to access all routes
+app.use(validateAccessToken)
 
 app.use('/horses', horseRouter);
 app.use('/lessons', lessonRouter);
 app.use('/users', userRouter);
+app.use('/me', meRouter);
 
 app.use(errorHandler);
 

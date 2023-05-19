@@ -55,6 +55,12 @@ permissions need to be added to the API and given to the admin role:
 - `update:events`
 - `delete:events`
 
+Make sure to enable RBAC in the settings for the API, and to toggle 'Add
+Permissions in the Access Token' on. The backend API needs to have access the
+Auth0 management API to manage user data. Be sure to give it that authorization
+in the Auth0 dashboard, and give it permissions to read, update, delete, and
+create users.
+
 ## 1. Create a .env file
 In ./server, create a .env file that will allow NodeJS to read environment variables, add these variables.
 ```
@@ -65,6 +71,7 @@ PASSWORD=daklsdjad
 MAIN_URL=www.ohack.org
 AUTH0_AUDIENCE=https://girard-server.herokuapp.com
 AUTH0_DOMAIN=<YOUR AUTH0 TENANT DOMAIN>
+AUTH0_CLIENT_SECRET=<The client ID of your Auth0 backend application>
 ```
 
 ## 2. Server side
@@ -188,6 +195,8 @@ The client uses the following environment variables:
 - `REACT_APP_AUTH0_CLIENT_ID`: the client ID of an auth0 application configured on the
   tenant
 - `REACT_APP_AUTH0_CLIENT_SECRET`: the client secret associated with that auth0 application
+- `REACT_APP_API_SERVER`: The url of the backend API server (no trailing slash).
+  For development, this should be `http://localhost:2222`
 
 If `NODE_ENV` is set to "production", environment variables should be set
 directly on the host. Otherwise, these variables can be defined in a `.env` file
