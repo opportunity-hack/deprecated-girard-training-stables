@@ -1,12 +1,30 @@
 const { 
   getUsers,
   createUser,
-  deleteUser, 
-  updateUser 
+  deleteUserById, 
+  updateUserById 
 } = require("../controllers/user");
+const {
+    checkRequiredPermissions,
+} = require("../middlewares/auth0.middleware");
 const router = require('express').Router();
 
-router.route("/").get(getUsers).post(createUser)
-router.route("/:id").delete(deleteUser).put(updateUser)
+const UserPermissions = {
+    Create: "create:users",
+    Update: "update:users",
+    Delete: "delete:users",
+}
+
+router.route("/").get(getUsers)
+
+router.post("/",
+    checkRequiredPermissions([UserPermissions.Create]),
+    createUser);
+router.delete("/:id",
+    checkRequiredPermissions([UserPermissions.Delete]),
+    deleteUserById)
+router.patch("/:id",
+    checkRequiredPermissions([UserPermissions.Update]),
+    updateUserById)
 
 module.exports = router;

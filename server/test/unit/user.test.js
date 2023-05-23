@@ -8,21 +8,31 @@ import { createUser,
 } from "../../src/controllers/user";
 import { faker } from "@faker-js/faker";
 import { build, perBuild, oneOf }  from '@jackfranklin/test-data-bot';
+import { errorHandler } from '../../src/middlewares/errorHandler'
+
+import { server } from '../mocks/Auth0Server';
+import axios from 'axios'; 
 
 
 beforeAll(async () => {
     await db.connect();
+    server.listen({
+        onUnhandledRequest: 'bypass',
+    })
 });
 
 afterAll(async() => {
     await db.drop();
+    server.close()
 });
 
 afterEach(async () => {
     await db.dropCollections();
+    server.resetHandlers()
 });
 
 const app = express();
+app.use(errorHandler);
 
 // Mock Data
 
@@ -56,6 +66,7 @@ const validUserIncomplete = {
 }
 
 const inValidUserNoEmail = {
+    user_id: newUniqueAuth0ID(),
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     userType: faker.helpers.arrayElement(userTypes),
@@ -120,12 +131,15 @@ describe("GET /users", () => {
             .send(validUser)
             .set('Accept', 'application/json')
 
+
         let res = await request(app)
             .get('/users')
             .query({ email: validUser.email})
             .set('Accept', 'application/json')
-        expect(res.statusCode).toEqual(200);
         expect(res.body[0]).toEqual(expect.objectContaining(validUser));
+        expect(res.body[0].last_login).toBeDefined()
+        expect(res.statusCode).toEqual(200);
+
 
         await request(app)
             .post('/users')
@@ -152,3 +166,4 @@ describe("GET /users", () => {
         expect(res.body).toEqual([]);
     });
 });
+

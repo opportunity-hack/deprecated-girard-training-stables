@@ -54,6 +54,8 @@ permissions need to be added to the API and given to the admin role:
 - `read:events`
 - `update:events`
 - `delete:events`
+- `read:roles`
+- `read:role_members`
 
 Make sure to enable RBAC in the settings for the API, and to toggle 'Add
 Permissions in the Access Token' on. The backend API needs to have access the
