@@ -12,6 +12,7 @@ import { useAuth0  } from '@auth0/auth0-react';
 import axios from 'axios';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import httpClient from '../../httpClient'; 
 
 
 const PREFIX = 'Accordion';
@@ -119,7 +120,7 @@ const [AdvancedAccess, setAccess] = React.useState(false);
     var safeEmail = "BAD@gmail.com"
   }
   console.log("Email for Register:", safeEmail);
-  axios.get('http://localhost:2222/users', { params: { email: safeEmail } } )
+  httpClient.get(process.env.REACT_APP_API_SERVER + "/users", { params: { email: safeEmail } } )
   .then(res => {
     //Check for the users id in the signed up users
     setUserID(res.data[0]._id);
