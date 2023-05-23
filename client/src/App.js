@@ -7,6 +7,7 @@ import SlotPicker from './components/SlotPicker/SlotPicker';
 import CreateEvent from './components/CreateEvent/CreateEvent';
 import Login from './components/Login/Login';
 import Profile from './components/Profile/Profile';
+import AdminUI from './components/AdminUI/AdminUI';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { addAccessTokenInterceptor } from './httpClient';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -34,6 +35,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Login/>} exact />
           <Route path="/signup" element={<Signup />} />
+          <Route 
+            path="/admin"
+            element={<ProtectedRoute 
+                    component={AdminUI}
+                    onRedirecting={redirectMessage} />} />
           <Route 
             path="/volunteer"
             element={<ProtectedRoute 
