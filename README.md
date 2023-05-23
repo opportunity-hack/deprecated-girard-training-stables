@@ -28,7 +28,8 @@ We use Auth0 for authentication and role-based access control (RBAC). make an
 account and a new tenant at <http://auth0.com>. The application assumes the
 existence of an `admin` role that you will need to [create on your
 tenant](https://auth0.com/docs/manage-users/access-control/configure-core-rbac/roles/create-roles)
-and assign some users to.
+and assign some users to. You will need to get the ID associated with this role
+for later steps in this setup process.
 
 For RBAC in the application to function properly, you need to add [Auth0
 actions](https://auth0.com/docs/customize/actions/flows-and-triggers/login-flow#add-user-roles-to-id-and-access-tokens)
@@ -74,6 +75,7 @@ MAIN_URL=www.ohack.org
 AUTH0_AUDIENCE=https://girard-server.herokuapp.com
 AUTH0_DOMAIN=<YOUR AUTH0 TENANT DOMAIN>
 AUTH0_CLIENT_SECRET=<The client ID of your Auth0 backend application>
+AUTH0_ADMIN_ROLE_ID=<The Auth0 role ID for the admin role you created>
 ```
 
 ## 2. Server side
