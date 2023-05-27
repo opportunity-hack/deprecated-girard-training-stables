@@ -17,9 +17,13 @@ interface userMap {
 
 export var userStore: userMap = {}
 
-const ApiUrl = `https://${process.env.AUTH0_DOMAIN}/api/v2`
-const usersEndpoint = `${ApiUrl}/users`;
-const adminUsersEndpoint = `${ApiUrl}/roles/${process.env.AUTH0_ADMIN_ROLE_ID}/users`;
+export function resetUserStore() {
+  userStore = {}
+}
+
+export const ApiUrl = `https://${process.env.AUTH0_DOMAIN}/api/v2`
+export const usersEndpoint = `${ApiUrl}/users`;
+export const adminUsersEndpoint = `${ApiUrl}/roles/${process.env.AUTH0_ADMIN_ROLE_ID}/users`;
 
 export const handlers = [
   rest.get(usersEndpoint, mockGetUsers),

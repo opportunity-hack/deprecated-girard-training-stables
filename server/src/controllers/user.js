@@ -8,8 +8,7 @@ const auth0ApiUrl = `https://${process.env.AUTH0_DOMAIN}/api/v2`
 const auth0usersEndpoint = `${auth0ApiUrl}/users`;
 const auth0adminUsersEndpoint = `${auth0ApiUrl}/roles/${process.env.AUTH0_ADMIN_ROLE_ID}/users`;
 
-module.exports.getUsers = asyncHandler(async function(req, res) {
-    console.log("something hit the /get users endpoint")
+module.exports.getUsers = asyncHandler(async function(req, res, next) {
     const auth0UserPromise = httpClient.get(auth0usersEndpoint)
     const adminUsersPromise = httpClient.get(auth0adminUsersEndpoint)
     let auth0usersResp;
@@ -19,9 +18,9 @@ module.exports.getUsers = asyncHandler(async function(req, res) {
         [auth0UserPromise,
          adminUsersPromise])
     } catch (err) {
-        res.status(500)
-        throw err
+        next(err)
     }
+
     // we use the lean option here to get plain javascript objects from 
     // the query rather than mongoose documents
     let users = await User.find(req.query).lean()
@@ -42,17 +41,22 @@ module.exports.getUsers = asyncHandler(async function(req, res) {
     res.status(200).json(response);
 });
 
-module.exports.createUser = asyncHandler(async function(req, res) {
-  const auth0CreateResp = await httpClient.post(auth0usersEndpoint, req.body)
+module.exports.createUser = asyncHandler(async function(req, res, next) {
+  try {
+    await httpClient.post(auth0usersEndpoint, req.body)
+  } catch(err) {
+    next(err)
+  }
   try {
       const response = await User.create(req.body);
       res.status(201).json(response);
   } catch(err) {
-    if (err instanceof mongoose.Error.ValidationError) {
-        res.status(400).json(err.errors);
-    } else {
-        throw err
-    }
+      if (err instanceof mongoose.Error.ValidationError) {
+          res.status(400).json(err.errors);
+      }
+      else {
+          next(err)
+      }
   }
 });
 
@@ -60,24 +64,25 @@ module.exports.updateUserById = asyncHandler(async function(req, res) {
     const id = await User.findById(req.params.id)
     if (!id)
     {
-      res.status(400);
-      throw new Error("User not found")
+      res.status(400).json({
+        error: "User not found"
+      });
     }
     const response = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
     res.status(200).json(response);
 });
 
-module.exports.deleteUserById = asyncHandler(async function(req, res) {
-  const id = await User.findById(req.params.id);
+module.exports.deleteUserById = asyncHandler(async function(req, res, next) {
+  const user = await User.findById(req.params.id);
 
-  if (!id)
+  if (!user)
   {
-      res.status(400);
-      throw new Error("User not found");
+      res.status(400).json({
+          error: "no user with specified id"
+      });
   }
 
-  // no need to save response since we are deleting
-  await id.delete();
-  res.status(200).json({ id: req.params.id });
+  await user.deleteOne();
+  res.status(200).json({ message: `deleted user ${req.params.id}` });
 });
 
