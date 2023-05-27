@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true,
       unique: true,
+      immutable: true,
   },
   firstName: {
     type: String,
@@ -39,14 +40,17 @@ const userSchema = new mongoose.Schema({
   // in inches
   height: {
     type: Number,
+    min: 1,
   },
   age: {
-    type: Number
+    type: Number,
+    min: 1,
   },
   horseExperience: {
     type: Number,
     required: true,
-    default: 0
+    default: 0,
+    min: 0,
   },
   horseRiding: {
     type: Boolean
