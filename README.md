@@ -55,14 +55,19 @@ permissions need to be added to the API and given to the admin role:
 - `read:events`
 - `update:events`
 - `delete:events`
-- `read:roles`
-- `read:role_members`
 
 Make sure to enable RBAC in the settings for the API, and to toggle 'Add
 Permissions in the Access Token' on. The backend API needs to have access the
 Auth0 management API to manage user data. Be sure to give it that authorization
 in the Auth0 dashboard, and give it permissions to read, update, delete, and
-create users.
+create users, as well as permissions to read roles and role members:
+
+- `read:users`
+- `update:users`
+- `delete:users`
+- `create:users`
+- `read:roles`
+- `read:role_members`
 
 ## 1. Create a .env file
 In ./server, create a .env file that will allow NodeJS to read environment variables, add these variables.
