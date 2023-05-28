@@ -60,16 +60,32 @@ module.exports.createUser = asyncHandler(async function(req, res, next) {
   }
 });
 
-module.exports.updateUserById = asyncHandler(async function(req, res) {
-    const id = await User.findById(req.params.id)
-    if (!id)
-    {
+module.exports.updateUserById = asyncHandler(async function(req, res, next) {
+    const user = await User.findById(req.params.id)
+    if (!user) {
       res.status(400).json({
         error: "User not found"
       });
     }
-    const response = await User.findByIdAndUpdate(req.params.id, req.body, {new: true});
-    res.status(200).json(response);
+
+    try {
+        user.set(req.body);
+        if (user.modifiedPaths().includes("email")) {
+            await httpClient.patch(
+                `${auth0usersEndpoint}/${user.user_id}`,
+                { email: user.email }
+            )
+        }
+        await user.save();
+        res.status(200).json(user);
+
+    } catch(err) {
+
+      if (err instanceof mongoose.Error.ValidationError) {
+          res.status(400).json(err.errors);
+      }
+      next(err)
+    }
 });
 
 module.exports.deleteUserById = asyncHandler(async function(req, res, next) {

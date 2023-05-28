@@ -78,7 +78,6 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('deleteOne', {document: true, query: false}, async function(next) {
-    console.log("hello")
     try {
         await httpClient.delete(auth0usersEndpoint + '/' + this.user_id)
     } catch(err) {

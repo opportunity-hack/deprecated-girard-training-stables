@@ -5,6 +5,7 @@ import express from "express";
 import User from "../../src/models/users";
 import { createUser,
         getUsers,
+        updateUserById,
         deleteUserById,
 } from "../../src/controllers/user";
 import { faker } from "@faker-js/faker";
@@ -85,6 +86,7 @@ const inValidUserNoEmail = {
 app.use(express.json());
 app.post('/users', createUser);
 app.get('/users', getUsers);
+app.patch('/users/:id', updateUserById);
 app.delete('/users/:id', deleteUserById);
 
 // Tests
@@ -226,6 +228,13 @@ describe("DELETE /users/:id", () => {
         expect(res.statusCode).toEqual(200);
     })
 
+    it("fails if the user to be deleted does not exist", async () => {
+        let res = await request(app)
+            .delete('/users/' + faker.database.mongodbObjectId())
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(400);
+    })
+
     it("fails if the call to Auth0 fails and doesn't modify anything", async () => {
         server.use(
           rest.delete(
@@ -268,3 +277,158 @@ describe("DELETE /users/:id", () => {
     })
 });
 
+describe("PATCH /user/:id", () => {
+    it("modifies a user's attributes", async () => {
+        await request(app)
+            .post('/users')
+            .send(validUser)
+            .set('Accept', 'application/json')
+
+        let res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        const user_id = res.body[0].user_id
+        const id = res.body[0]._id
+        expect(userStore[user_id]).toBeDefined();
+
+        res = await request(app)
+            .patch('/users/' + id)
+            .send({ "firstName": "foo", "age": 20, "horseLeading": true, bar: "baz" })
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.firstName).toEqual("foo")
+        expect(res.body.age).toEqual(20)
+        expect(res.body.horseLeading).toEqual(true)
+
+        // fields not in the model schema should be ignored
+        expect(res.body.bar).not.toBeDefined()
+
+        res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body[0].firstName).toEqual("foo")
+        expect(res.body[0].age).toEqual(20)
+        expect(res.body[0].horseLeading).toEqual(true)
+    })
+
+    it("modifying a user's email changes the users auth0 email", async () => {
+        await request(app)
+            .post('/users')
+            .send(validUser)
+            .set('Accept', 'application/json')
+
+        let res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        const user_id = res.body[0].user_id
+        const id = res.body[0]._id
+        expect(userStore[user_id]).toBeDefined();
+
+        const newEmail = newUniqueEmail()
+        res = await request(app)
+            .patch('/users/' + id)
+            .send({ "email": newEmail, "firstName": "foo", "age": 20, "horseLeading": true })
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body.email).toEqual(newEmail)
+        expect(userStore[user_id].email).toEqual(newEmail)
+        expect(res.body.firstName).toEqual("foo")
+        expect(res.body.age).toEqual(20)
+        expect(res.body.horseLeading).toEqual(true)
+
+        res = await request(app)
+            .get('/users')
+            .query({ email: newEmail})
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body[0].email).toEqual(newEmail)
+        expect(res.body[0].firstName).toEqual("foo")
+        expect(res.body[0].age).toEqual(20)
+        expect(res.body[0].horseLeading).toEqual(true)
+    })
+
+    it("fails if the call to Auth0 fails and doesn't modify anything", async () => {
+        server.use(
+          rest.patch(
+            usersEndpoint + '/:id',
+            async (req, res, ctx) => {
+                return res(
+                    ctx.json({
+                        message: "could not update specified user for some reason"
+                    }),
+                    ctx.status(500)
+                )
+            },
+          ),
+        )
+
+        await request(app)
+            .post('/users')
+            .send(validUser)
+            .set('Accept', 'application/json')
+
+        let res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.body[0]).toEqual(expect.objectContaining(validUser));
+        expect(res.body[0].last_login).toBeDefined()
+        expect(res.statusCode).toEqual(200);
+        const user_id = res.body[0].user_id
+        const id = res.body[0]._id
+        expect(userStore[user_id]).toBeDefined();
+
+        const newEmail = newUniqueEmail()
+        res = await request(app)
+            .patch('/users/' + id)
+            .send({ "email": newEmail,
+                    "firstName": "foo",
+                    "age": 20,
+                    "horseLeading": true })
+            .set('Accept', 'application/json')
+        expect(res.statusCode).not.toEqual(200);
+
+        res = await request(app)
+            .get('/users')
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect(res.body[0].email).toEqual(validUser.email)
+    })
+
+    it("fails if the user to be updated does not exist", async () => {
+        let res = await request(app)
+            .patch('/users/' + faker.database.mongodbObjectId())
+            .send({ "firstName": "foo" })
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(400);
+    })
+
+    it("fails if an invalid attribute value is given", async () => {
+        await request(app)
+            .post('/users')
+            .send(validUser)
+            .set('Accept', 'application/json')
+
+        let res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        const id = res.body[0]._id
+        expect(res.statusCode).toEqual(200);
+
+        res = await request(app)
+            .patch('/users/' + id)
+            .send({ "firstName": "foo", "horseExperience": -20 })
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(400);
+        expect(res.body.horseExperience).not.toEqual(-20)
+        expect(res.body.firstName).not.toEqual("foo")
+    })
+
+})

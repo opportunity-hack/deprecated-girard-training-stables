@@ -28,7 +28,7 @@ export const adminUsersEndpoint = `${ApiUrl}/roles/${process.env.AUTH0_ADMIN_ROL
 export const handlers = [
   rest.get(usersEndpoint, mockGetUsers),
   rest.post(usersEndpoint, mockPostUsers),
-  rest.put(usersEndpoint + '/:user_id', mockUpdateUser),
+  rest.patch(usersEndpoint + '/:user_id', mockUpdateUser),
   rest.delete(usersEndpoint + '/:user_id', mockDeleteUser),
   rest.get(adminUsersEndpoint, mockGetAdmins),
   rest.post(adminUsersEndpoint, mockSetAdmin),
