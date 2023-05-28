@@ -5,14 +5,15 @@ import express from "express";
 import User from "../../src/models/users";
 import { createUser,
         getUsers,
+        deleteUserById,
 } from "../../src/controllers/user";
 import { faker } from "@faker-js/faker";
 import { build, perBuild, oneOf }  from '@jackfranklin/test-data-bot';
 import { errorHandler } from '../../src/middlewares/errorHandler'
 
+import { userStore, usersEndpoint, resetUserStore } from '../mocks/Auth0handlers';
 import { server } from '../mocks/Auth0Server';
-import axios from 'axios'; 
-
+import { rest } from 'msw';
 
 beforeAll(async () => {
     await db.connect();
@@ -28,6 +29,7 @@ afterAll(async() => {
 
 afterEach(async () => {
     await db.dropCollections();
+    resetUserStore();
     server.resetHandlers()
 });
 
@@ -83,6 +85,7 @@ const inValidUserNoEmail = {
 app.use(express.json());
 app.post('/users', createUser);
 app.get('/users', getUsers);
+app.delete('/users/:id', deleteUserById);
 
 // Tests
 
@@ -97,6 +100,8 @@ describe("POST /users", () => {
         expect(res.body).toEqual(expect.objectContaining(validUser));
         let createdUser = await User.findOne({ email: validUser.email }).exec()
         expect(createdUser).toEqual(expect.objectContaining(validUser));
+        // check that a user was also created in the Auth0 DB 
+        expect(userStore[validUser.user_id]).toBeDefined();
 
         res = await request(app)
             .post('/users')
@@ -121,6 +126,28 @@ describe("POST /users", () => {
             .set('Accept', 'application/json')
         expect(res.statusCode).toEqual(400);
     });
+
+    it("fails if the call to Auth0 fails", async () => {
+        server.use(
+          rest.post(
+            usersEndpoint,
+            async (req, res, ctx) => {
+                return res(
+                    ctx.json({
+                        message: "could not create new user for some reason"
+                    }),
+                    ctx.status(500)
+                )
+            },
+          ),
+        )
+
+        let res = await request(app)
+          .post('/users')
+          .send(newValidUserBuilder.one())
+          .set('Accept', 'application/json')
+        expect(res.statusCode).not.toEqual(201)
+    })
 });
 
 describe("GET /users", () => {
@@ -158,12 +185,86 @@ describe("GET /users", () => {
     });
 
     it("returns an empty array if requested user(s) is/are not found", async () => {
-        // creating users as in the above tests
+        // creating users using functionality tested above
         let res = await request(app)
             .get('/users')
             .query({ email: "nonexistent@example.com"})
             .set('Accept', 'application/json')
         expect(res.body).toEqual([]);
     });
+});
+
+describe("DELETE /users/:id", () => {
+    it("deletes a user by ID in both the application and Auth0 databases", async () => {
+        await request(app)
+            .post('/users')
+            .send(validUser)
+            .set('Accept', 'application/json')
+
+        let res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.body[0]).toEqual(expect.objectContaining(validUser));
+        expect(res.body[0].last_login).toBeDefined()
+        expect(res.statusCode).toEqual(200);
+        const user_id = res.body[0].user_id
+        const id = res.body[0]._id
+        expect(userStore[user_id]).toBeDefined();
+
+        res = await request(app)
+            .delete('/users/' + id)
+            .set('Accept', 'application/json')
+        expect(res.statusCode).toEqual(200);
+        expect (userStore[user_id]).not.toBeDefined()
+
+        res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.body).toEqual([])
+        expect(res.statusCode).toEqual(200);
+    })
+
+    it("fails if the call to Auth0 fails and doesn't modify anything", async () => {
+        server.use(
+          rest.delete(
+            usersEndpoint + '/:id',
+            async (req, res, ctx) => {
+                return res(
+                    ctx.json({
+                        message: "could not delete specified user for some reason"
+                    }),
+                    ctx.status(500)
+                )
+            },
+          ),
+        )
+
+        await request(app)
+            .post('/users')
+            .send(validUser)
+            .set('Accept', 'application/json')
+
+        let res = await request(app)
+            .get('/users')
+            .query({ email: validUser.email})
+            .set('Accept', 'application/json')
+        expect(res.body[0]).toEqual(expect.objectContaining(validUser));
+        expect(res.body[0].last_login).toBeDefined()
+        expect(res.statusCode).toEqual(200);
+        const user_id = res.body[0].user_id
+        const id = res.body[0]._id
+        expect(userStore[user_id]).toBeDefined();
+
+        res = await request(app)
+            .delete('/users/' + id)
+            .set('Accept', 'application/json')
+        expect(res.statusCode).not.toEqual(200);
+        expect (userStore[user_id]).toBeDefined()
+
+        let createdUser = await User.findOne({ email: validUser.email }).exec()
+        expect(createdUser).toEqual(expect.objectContaining(validUser));
+    })
 });
 

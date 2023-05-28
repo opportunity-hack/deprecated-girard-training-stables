@@ -1,6 +1,17 @@
 const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
+if (process.env.NODE_ENV !== "production") {
+    const dotenv = require("dotenv")
+    dotenv.config()
+}
+
+const auth0ApiUrl = `https://${process.env.AUTH0_DOMAIN}/api/v2`
+const auth0usersEndpoint = `${auth0ApiUrl}/users`;
+const auth0adminUsersEndpoint = `${auth0ApiUrl}/roles/${process.env.AUTH0_ADMIN_ROLE_ID}/users`;
+
+const { httpClient } = require('../utils/httpClient')
+
 const userSchema = new mongoose.Schema({
   // The auth0 id associated with a user. 
   // This is different from the _id ObjectID
@@ -9,6 +20,7 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true,
       unique: true,
+      immutable: true,
   },
   firstName: {
     type: String,
@@ -39,14 +51,17 @@ const userSchema = new mongoose.Schema({
   // in inches
   height: {
     type: Number,
+    min: 1,
   },
   age: {
-    type: Number
+    type: Number,
+    min: 1,
   },
   horseExperience: {
     type: Number,
     required: true,
-    default: 0
+    default: 0,
+    min: 0,
   },
   horseRiding: {
     type: Boolean
@@ -60,6 +75,16 @@ const userSchema = new mongoose.Schema({
   horseLeading: {
     type: Boolean
   }
+});
+
+userSchema.pre('deleteOne', {document: true, query: false}, async function(next) {
+    console.log("hello")
+    try {
+        await httpClient.delete(auth0usersEndpoint + '/' + this.user_id)
+    } catch(err) {
+        throw err
+    }
+    next()
 });
 
 const User = mongoose.model('User', userSchema);

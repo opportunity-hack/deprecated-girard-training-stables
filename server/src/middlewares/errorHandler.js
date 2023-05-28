@@ -4,7 +4,23 @@ const {
     InsufficientScopeError,
 } = require("express-oauth2-jwt-bearer");
 
+if (process.env.NODE_ENV !== "production") {
+    const dotenv = require("dotenv");
+    dotenv.config()
+}
+
+const winston = require("winston");
+const { combine, timestamp, json, errors } = winston.format;
+const logger = winston.createLogger({
+  level: "info",
+  format: combine(errors({ stack: process.env.NODE_ENV !== 'production' }),
+      timestamp(), json()),  
+  transports: [new winston.transports.Console()],
+});
+
 const errorHandler = (err, req, res, next) => {
+    logger.error(err);
+
     if (err instanceof InsufficientScopeError) {
         const message = "Permission denied";
         res.status(err.status).json({ message });
