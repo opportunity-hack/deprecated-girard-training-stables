@@ -315,7 +315,7 @@ describe("PATCH /user/:id", () => {
         expect(res.body[0].horseLeading).toEqual(true)
     })
 
-    it("modifying a user's email changes the users auth0 email", async () => {
+    it("modifying a user's email or role changes the user's auth0 email or role", async () => {
         await request(app)
             .post('/users')
             .send(validUser)
@@ -341,6 +341,18 @@ describe("PATCH /user/:id", () => {
         expect(res.body.firstName).toEqual("foo")
         expect(res.body.age).toEqual(20)
         expect(res.body.horseLeading).toEqual(true)
+
+        res = await request(app)
+            .patch('/users/' + id)
+            .send({ setAdmin: true })
+            .set('Accept', 'application/json')
+        expect(userStore[user_id].isAdmin).toEqual(true)
+
+        res = await request(app)
+            .patch('/users/' + id)
+            .send({ setAdmin: false })
+            .set('Accept', 'application/json')
+        expect(userStore[user_id].isAdmin).toEqual(false)
 
         res = await request(app)
             .get('/users')

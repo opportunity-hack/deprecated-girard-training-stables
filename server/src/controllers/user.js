@@ -69,6 +69,19 @@ module.exports.updateUserById = asyncHandler(async function(req, res, next) {
     }
 
     try {
+        if ("setAdmin" in req.body) {
+            if (req.body.setAdmin === true) {
+                await httpClient.post(
+                `${auth0usersEndpoint}/${user.user_id}/roles`,
+                {roles: [process.env.AUTH0_ADMIN_ROLE_ID]})
+            } else {
+                // the 2nd parameter to axios.delete is axios options, not
+                // a request body like in axios.post or axios.put
+                await httpClient.delete(
+                `${auth0usersEndpoint}/${user.user_id}/roles`,
+                    { data: {roles: [process.env.AUTH0_ADMIN_ROLE_ID]} })
+            }
+        }
         user.set(req.body);
         if (user.modifiedPaths().includes("email")) {
             await httpClient.patch(
