@@ -28,10 +28,11 @@ export const adminUsersEndpoint = `${ApiUrl}/roles/${process.env.AUTH0_ADMIN_ROL
 export const handlers = [
   rest.get(usersEndpoint, mockGetUsers),
   rest.post(usersEndpoint, mockPostUsers),
-  rest.put(usersEndpoint + '/:user_id', mockUpdateUser),
+  rest.patch(usersEndpoint + '/:user_id', mockUpdateUser),
   rest.delete(usersEndpoint + '/:user_id', mockDeleteUser),
+  rest.post(usersEndpoint + '/:user_id/roles', mockSetAdmin),
+  rest.delete(usersEndpoint + '/:user_id/roles', mockUnSetAdmin),
   rest.get(adminUsersEndpoint, mockGetAdmins),
-  rest.post(adminUsersEndpoint, mockSetAdmin),
 ]
 
 async function mockPostUsers(req, res, ctx) {
@@ -105,10 +106,32 @@ function mockGetAdmins(req, res, ctx) {
 }
 
 function mockSetAdmin(req, res, ctx) {
-  const user_ids = req.params
-  user_ids.forEach(user_id => {userStore[user_id].isAdmin = true})
+  const user_id = req.params.user_id
+  if (!req.body?.roles?.includes(process.env.AUTH0_ADMIN_ROLE_ID)) {
+    return res(
+      ctx.status(400),
+      ctx.json({message: "Invalid  request"})
+    )
+  }
+  userStore[user_id].isAdmin = true
   return res(
-    ctx.status(200),
-    ctx.json({message:"success"})
+    ctx.status(204),
+  )
+}
+
+function mockUnSetAdmin(req, res, ctx) {
+  const user_id = req.params.user_id
+  console.log("trying to unset admin role for: ", user_id)
+  if (!req.body?.roles?.includes(process.env.AUTH0_ADMIN_ROLE_ID)) {
+    console.log("there was a problem with the request format")
+    console.log(req)
+    return res(
+      ctx.status(400),
+      ctx.json({message: "Invalid  request"})
+    )
+  }
+  userStore[user_id].isAdmin = false
+  return res(
+    ctx.status(204),
   )
 }
