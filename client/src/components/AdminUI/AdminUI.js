@@ -38,6 +38,13 @@ function AdminUI() {
           editable: true,
         },
         {
+            field: 'userType',
+            headerName: 'user type',
+            editable: true,
+            type: 'singleSelect',
+            valueOptions: ['volunteer', 'instructor', 'volunteer coordinator']
+        },
+        {
           field: 'isAdmin',
           headerName: 'Admin',
           editable: true,
