@@ -132,7 +132,7 @@ function AdminUI() {
     }
 
     return isAuthenticated && isAdmin && (
-          <Container sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Container maxWidth='false' sx={{ width: '100%', overflowX: 'auto', marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <DataGrid
                 getRowId={(user) => user.user_id}
                 rows={rows}
