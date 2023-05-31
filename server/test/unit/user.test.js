@@ -344,13 +344,13 @@ describe("PATCH /user/:id", () => {
 
         res = await request(app)
             .patch('/users/' + id)
-            .send({ setAdmin: true })
+            .send({ isAdmin: true })
             .set('Accept', 'application/json')
         expect(userStore[user_id].isAdmin).toEqual(true)
 
         res = await request(app)
             .patch('/users/' + id)
-            .send({ setAdmin: false })
+            .send({ isAdmin: false })
             .set('Accept', 'application/json')
         expect(userStore[user_id].isAdmin).toEqual(false)
 

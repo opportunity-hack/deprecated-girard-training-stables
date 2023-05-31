@@ -1,20 +1,98 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Container, Typography, Button } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { Container, Typography, Button, Snackbar, Alert } from '@mui/material';
+import { GridRowModes, GridActionsCellItem, DataGrid } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
 import httpClient from '../../httpClient';
+
+const useUpdateUsers = () => {
+    return useCallback(
+        (user) =>
+          new Promise((resolve, reject) => {
+            setTimeout(async () => {
+                const res = await httpClient.patch(`${process.env.REACT_APP_API_SERVER}/users/${user._id}`, user).catch(err => "")
+                if (res.status != 200) {
+                    reject(new Error("Error updating user."));
+                } else {
+                    resolve(user);
+                }
+            }, 200);
+        }),
+      [],
+    );
+}
 
 function AdminUI() {
   const [isAdmin, setIsAdmin] = useState(false)
   const { isAuthenticated, user, loginWithRedirect } = useAuth0();
-  const [users, setUsers] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
+  const [snackbar, setSnackbar] = useState(null);
+  const handleCloseSnackbar = () => setSnackbar(null);
+  const updateUsers = useUpdateUsers();
   useEffect(() => {
         setIsAdmin(user?.["https://girard-server.herokuapp.com/roles"]?.includes('admin'));
   })
   useEffect(() => {
       httpClient.get(process.env.REACT_APP_API_SERVER + "/users")
-          .then(res => setUsers(res.data))
+          .then(res => setRows(res.data))
   }, []);
+
+    const handleRowEditStart = (params, event) => {
+        event.defaultMuiPrevented = true;
+    };
+
+    const handleRowEditStop = (params, event) => {
+        event.defaultMuiPrevented = true;
+    };
+
+    const handleEditClick = (id) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    };
+
+    const handleSaveClick = (id) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    };
+
+    const handleDeleteClick = (_id) => async() => {
+        try {
+        await httpClient.delete(`${process.env.REACT_APP_API_SERVER}/users/${_id}`).catch(err => "")
+        setRows(rows.filter((row) => row._id !== _id));
+            setSnackbar({ children: 'User successfully deleted', severity: 'success' });
+        } catch (err) {
+          setSnackbar({ children: 'Error deleting user', severity: 'error' });
+        }
+    };
+
+    const handleCancelClick = (_id) => () => {
+        setRowModesModel({
+            ...rowModesModel,
+            [_id]: { mode: GridRowModes.View, ignoreModifications: true},
+        });
+
+        const editedRow = rows.find((row) => row._id === _id);
+        if (editedRow.isNew) {
+            setRows(rows.filter((row) => row._id !== _id));
+        }
+    };
+
+    const processRowUpdate = async (newRow) => {
+        await updateUsers(newRow);
+        const updatedRow = { ...newRow, isNew: false };
+        setSnackbar({ children: 'User successfully saved', severity: 'success' });
+        return updatedRow;
+    }
+
+    const handleProcessRowUpdateError = useCallback((error) => {
+      setSnackbar({ children: error.message, severity: 'error' });
+    }, []);
+
+    const handleRowModesModelChange = (newRowModesModel) => {
+        setRowModesModel(newRowModesModel);
+    };
 
     const columns = [
         {
@@ -106,9 +184,50 @@ function AdminUI() {
           editable: true,
           type: 'boolean',
         },
-    ]
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: 'Actions',
+            width: 100,
+            cellClassName: 'actions',
+            getActions: ({ id }) => {
+              const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+  
+              if (isInEditMode) {
+                return [
+                  <GridActionsCellItem
+                    icon={<SaveIcon />}
+                    label="Save"
+                    onClick={handleSaveClick(id)}
+                  />,
+                  <GridActionsCellItem
+                    icon={<CancelIcon />}
+                    label="Cancel"
+                    className="textPrimary"
+                    onClick={handleCancelClick(id)}
+                    color="inherit"
+                  />,
+                ];
+              }
 
-    let rows = users;
+            return [
+              <GridActionsCellItem
+                icon={<EditIcon />}
+                label="Edit"
+                className="textPrimary"
+                onClick={handleEditClick(id)}
+                color="inherit"
+              />,
+              <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={handleDeleteClick(id)}
+                color="inherit"
+              />,
+            ];
+          },
+        }
+    ]
 
     if (!isAuthenticated) {
         return (
@@ -134,12 +253,27 @@ function AdminUI() {
     return isAuthenticated && isAdmin && (
           <Container maxWidth='false' sx={{ width: '100%', overflowX: 'auto', marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <DataGrid
-                getRowId={(user) => user.user_id}
+                getRowId={(user) => user._id}
                 rows={rows}
                 columns={columns}
-                checkboxSelection
-                disableRowSelectionOnClick
+                editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStart={handleRowEditStart}
+                onRowEditStop={handleRowEditStop}
+                processRowUpdate={processRowUpdate}
+                onProcessRowUpdateError={handleProcessRowUpdateError}
             />
+            {!!snackbar && (
+                <Snackbar
+                  open
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                  onClose={handleCloseSnackbar}
+                  autoHideDuration={6000}
+                >
+                    <Alert {...snackbar} onClose={handleCloseSnackbar} />
+                </Snackbar>
+            )}
           </Container>
     )
 }

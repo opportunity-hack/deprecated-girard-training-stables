@@ -51,6 +51,9 @@ following steps. You will also need to make an Auth0 API with the identifier
 authorization parameter when requesting access tokens for the API. The following
 permissions need to be added to the API and given to the admin role:
 
+- `create:users`
+- `update:users`
+- `delete:users`
 - `create:events`
 - `read:events`
 - `update:events`

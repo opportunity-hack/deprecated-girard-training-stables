@@ -69,8 +69,8 @@ module.exports.updateUserById = asyncHandler(async function(req, res, next) {
     }
 
     try {
-        if ("setAdmin" in req.body) {
-            if (req.body.setAdmin === true) {
+        if ("isAdmin" in req.body) {
+            if (req.body.isAdmin === true) {
                 await httpClient.post(
                 `${auth0usersEndpoint}/${user.user_id}/roles`,
                 {roles: [process.env.AUTH0_ADMIN_ROLE_ID]})
@@ -102,16 +102,20 @@ module.exports.updateUserById = asyncHandler(async function(req, res, next) {
 });
 
 module.exports.deleteUserById = asyncHandler(async function(req, res, next) {
-  const user = await User.findById(req.params.id);
-
-  if (!user)
-  {
-      res.status(400).json({
-          error: "no user with specified id"
-      });
+  try {
+      console.log(req.params.id)
+      const user = await User.findById(req.params.id);
+      if (!user)
+      {
+          res.status(400).json({
+              error: "no user with specified id"
+          });
+      }
+      await user.deleteOne();
+      res.status(200).json({ message: `deleted user ${req.params.id}` });
+  } catch(err) {
+      res.status(500)
+      next(err)
   }
-
-  await user.deleteOne();
-  res.status(200).json({ message: `deleted user ${req.params.id}` });
 });
 
