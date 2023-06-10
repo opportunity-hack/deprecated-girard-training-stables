@@ -11,6 +11,8 @@ import AdminUI from './components/AdminUI/AdminUI';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { addAccessTokenInterceptor } from './httpClient';
 import { useAuth0 } from '@auth0/auth0-react';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 sessionStorage.setItem("email",'');
 
@@ -29,6 +31,7 @@ function App() {
   }, [getAccessTokenSilently]);
 
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
     <div className="App">
       <main>
         <Navbar></Navbar>
@@ -58,6 +61,7 @@ function App() {
         </Routes>
       </main>
     </div>
+    </LocalizationProvider>
   );
 }
 
