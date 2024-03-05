@@ -1,3 +1,6 @@
+Please use https://github.com/opportunity-hack/evs
+
+
 # Team info
 
 ## Contributors 
